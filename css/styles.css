@@ -324,6 +324,7 @@ em, i {
   font-size: 0.8rem;
   color: rgba(237, 230, 221, 0.4);
   margin-top: 12px;
+  margin-bottom: 20px;
   line-height: 1.5;
   font-style: italic;
 }

@@ -245,7 +245,7 @@ function initNavigation() {
         if (link) link.classList.add('active');
       }
     });
-  }, { threshold: 0.2, rootMargin: '-80px 0px -50% 0px' });
+  }, { threshold: 0.01, rootMargin: '-100px 0px -60% 0px' });
 
   sections.forEach(s => sectionObserver.observe(s));
 }
