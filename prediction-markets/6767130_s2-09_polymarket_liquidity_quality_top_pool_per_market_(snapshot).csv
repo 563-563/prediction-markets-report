@@ -1,0 +1,3 @@
+quality_bucket,market_count,market_share_pct,volume_24h_sum,volume_24h_share_pct,volume_total_sum,avg_liquidity
+Shallow (<$5k liq),12,2.400000,49260.93609,0.22,1.149679512596e+06,2398
+Deep (>=$5k liq),488,97.600000,2.2377589250852995e+07,99.78,2.713045125763057e+09,381443

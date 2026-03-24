@@ -1,0 +1,9 @@
+platform,settle_bucket,bucket_order,trade_count,avg_spread_cents,avg_impact_cents
+kalshi,30+d,1,5.20757e+06,2.85,1.21
+polymarket,30+d,1,6.3109763e+07,0.21,0.24
+kalshi,7-30d,2,3.786701e+06,2.83,1.21
+polymarket,7-30d,2,4.9377869e+07,0.26,0.32
+kalshi,1-7d,3,7.266015e+06,2.94,1.1
+polymarket,1-7d,3,5.0726837e+07,0.41,0.52
+kalshi,<1d,4,5.5076956e+07,3.13,1.41
+polymarket,<1d,4,2.40827002e+08,0.68,0.83

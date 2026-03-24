@@ -1,0 +1,13 @@
+platform,size_bucket,avg_impact_cents
+kalshi,1 - <$1,1.5
+polymarket,1 - <$1,0.5
+kalshi,2 - $1-$10,1.5
+polymarket,2 - $1-$10,0.83
+kalshi,3 - $10-$100,1.35
+polymarket,3 - $10-$100,0.73
+kalshi,4 - $100-$1K,1.14
+polymarket,4 - $100-$1K,0.6
+kalshi,5 - $1K-$10K,0.78
+polymarket,5 - $1K-$10K,0.53
+kalshi,6 - >$10K,0.58
+polymarket,6 - >$10K,0.49

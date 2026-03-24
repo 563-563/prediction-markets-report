@@ -1,0 +1,15 @@
+platform,percentile_bucket,pct_of_total
+kalshi,Top 0.1%,41.56
+polymarket,Top 0.1%,37.77
+kalshi,0.1-1%,38.59
+polymarket,0.1-1%,27.24
+kalshi,1-5%,13.28
+polymarket,1-5%,18.09
+kalshi,5-10%,4.12
+polymarket,5-10%,6.76
+kalshi,10-25%,1.93
+polymarket,10-25%,6.92
+kalshi,25-50%,0.4
+polymarket,25-50%,2.69
+kalshi,Bottom 50%,0.11
+polymarket,Bottom 50%,0.53

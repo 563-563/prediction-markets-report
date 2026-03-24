@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The State of Prediction Markets | blocmates.</title>
+  <meta name="description" content="An interactive deep dive into the prediction market sector — rails, wrappers, and the stack war reshaping event contracts.">
+  <link rel="stylesheet" href="css/styles.css?v=40">
+</head>
+<body>
+
+<!-- Reading Progress -->
+<div class="reading-progress" id="readingProgress"></div>
+
+<!-- Navigation -->
+<nav class="report-nav" id="reportNav">
+  <div class="report-nav-inner">
+    <a href="#top" class="nav-brand">blocmates<span class="dot">.</span></a>
+    <div class="nav-links" id="sectionNav">
+      <a href="#sector-60s" data-section="sector-60s">60 Seconds</a>
+      <a href="#deep-dive" data-section="deep-dive">Deep Dive</a>
+      <a href="#poly-vs-kalshi" data-section="poly-vs-kalshi">Poly vs Kalshi</a>
+      <a href="#money" data-section="money">Revenue</a>
+      <a href="#behavior" data-section="behavior">User Behavior</a>
+      <a href="#innovations" data-section="innovations">Innovations</a>
+      <a href="#outlook" data-section="outlook">Outlook</a>
+    </div>
+    <div class="view-tabs nav-view-tabs">
+      <button class="view-tab active" data-view="report">Report</button>
+      <button class="view-tab" data-view="dashboard">Dashboard</button>
+      
+    </div>
+  </div>
+</nav>
+
+<!-- View Toggle (always visible) -->
+<div class="view-bar" id="viewBar">
+  <a href="#top" class="nav-brand">blocmates<span class="dot">.</span></a>
+  <div class="view-tabs">
+    <button class="view-tab active" data-view="report">Report</button>
+    <button class="view-tab" data-view="dashboard">Dashboard</button>
+    
+  </div>
+</div>
+
+<!-- ====== REPORT VIEW ====== -->
+<div id="reportView">
+
+<!-- ====== HERO ====== -->
+<header class="hero" id="top">
+  <div class="hero-eyebrow">blocmates<span class="dot">.</span> Research</div>
+  <h1>The State of Prediction Markets</h1>
+  <div class="hero-meta">
+    <span>March 2026</span>
+    <span>38 datasets</span>
+    <span>~25 min read</span>
+  </div>
+</header>
+
+<!-- ====== ARTICLE ====== -->
+<main class="article">
+
+  <!-- Opening paragraphs (lines 1-3) -->
+  <p>Those who are still arguing whether Kalshi or Polymarket will dominate the prediction market landscape are missing the big picture. Prediction markets are becoming real infrastructure, and the eventual winners will be decided by who can occupy key product archetypes as the stack stratifies, not a winner-takes-all landslide.</p>
+
+  <p>That stratification is already visible. On one end, crypto-native rails like Polymarket optimize for breadth, speed-to-list, and narrative relevance; on the other, regulated rails like Kalshi optimize for settlement credibility and distribution compatibility. But the real accelerant is happening one layer up: execution wrappers like Coinbase and Robinhood are turning event contracts into a mainstream instrument shelf, while TradFi incumbents like Nasdaq and Cboe are pushing standardized, hedging-grade binaries that fit neatly into existing market structure and compliance regimes.</p>
+
+  <p>This report gives you the framework to understand <strong>where the category is headed</strong>, not as a binary &ldquo;onchain vs offchain&rdquo; debate, but as a stack war between rails and wrappers that productize into repeatable archetypes. We&rsquo;ll map the market into the product formats users actually adopt, show where liquidity is truly tradeable (and where it breaks), explain how &ldquo;probability-as-data&rdquo; is becoming a parallel business line, and close with our base, bull, and bear cases for the sector.</p>
+
+  <!-- ====== SECTION: 60 Seconds ====== -->
+  <section id="sector-60s">
+    <span class="section-label">Section 01</span>
+    <h2>The prediction market sector in 60 seconds</h2>
+
+    <p>What was dismissed as a passing trend around the 2024 election cycle has ballooned into a class of derivatives that does billions of dollars of volume every week.</p>
+
+    <!-- Chart: Weekly volume -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Weekly Prediction Market Volume (USD Spent)</div>
+        <div class="chart-controls">
+          <button class="chart-btn active" data-chart="volumeChart" data-view="stacked">Stacked</button>
+          <button class="chart-btn" data-chart="volumeChart" data-view="share">Market Share</button>
+        </div>
+      </div>
+      <div class="chart-wrapper"><canvas id="volumeChart" height="320"></canvas></div>
+    </div>
+
+    <p><a href="https://polymarket.com/activity" target="_blank">Polymarket</a> still has the edge in volume, depth, and breadth - but <a href="https://kalshi.com/markets" target="_blank">Kalshi</a> is closing the gap in the overall standings. Overall, the sector is thriving. In the beginning of 2024, you could sneeze and slip the price of every market by 10 cents, but by the fourth quarter of 2025, Polymarket and Kalshi had thousands of markets that could absorb a $10K trade within 1&cent; of price impact.</p>
+
+    <!-- Chart: Institutional grade -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Institutional-Grade Markets ($10K Within 1&cent; Impact)</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="institutionalChart" height="280"></canvas></div>
+    </div>
+
+    <p>This diversification can be visualized through the Herfindahl-Hirschman Index (HHI), which can tell us when an ecosystem becomes overreliant on too few market leaders.</p>
+
+    <!-- Chart: HHI -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">HHI Concentration Over Time</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="hhiChart" height="280"></canvas></div>
+      <div class="chart-caption">Higher HHI = more concentrated in a few markets. Lower = healthier diversification.</div>
+    </div>
+
+    <p>We see that, for all of the worry, the end of the 2024 election season represented only a momentary high point in the concentration of prediction market activity.</p>
+
+    <!-- Widget: HHI Playground -->
+    <div class="chart-container wide fade-in" style="padding:24px 28px">
+      <div class="chart-title" style="margin-bottom:4px">Try it: HHI Concentration Playground</div>
+      <p class="chart-desc">Each bar represents a <strong>market category</strong> (e.g. &ldquo;US Election,&rdquo; &ldquo;Crypto Prices,&rdquo; &ldquo;Sports&rdquo;)  - not a platform. HHI = &Sigma;(share&sup2;). Drag bars to simulate how volume concentration across market categories affects ecosystem health. Under 1,500 = competitive. Over 2,500 = highly concentrated.</p>
+      <div style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;margin:16px 0">
+        <div style="flex:0 0 190px">
+          <div class="widget-stat-card" style="margin-bottom:14px">
+            <div class="widget-stat-label">Current HHI</div>
+            <div class="widget-stat-value" id="rpt-hhi-value" style="font-size:2.2rem">1,000</div>
+            <div id="rpt-hhi-verdict" style="font-size:0.82rem;font-weight:600;color:#00de95;margin-top:4px">Competitive</div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <button class="chart-btn" onclick="setRptHHIPreset('equal')">Even Split</button>
+            <button class="chart-btn" onclick="setRptHHIPreset('election')">Election-Dominated</button>
+            <button class="chart-btn" onclick="setRptHHIPreset('duopoly')">Duopoly</button>
+            <button class="chart-btn" onclick="setRptHHIPreset('monopoly')">Near-Monopoly</button>
+          </div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <p style="font-size:0.72rem;color:rgba(237,230,221,0.3);margin-bottom:6px">Drag bars up/down to adjust market share</p>
+          <canvas id="rptHhiPlayground" height="240" style="cursor:ns-resize;width:100%;display:block"></canvas>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: Deep Dive ====== -->
+  <section id="deep-dive">
+    <span class="section-label">Section 02</span>
+    <h2>Prediction market sector deep dive</h2>
+
+    <p>The important thing to re-learn is that these are not all one product. Prediction markets are simultaneously:</p>
+    <ul>
+      <li>A <strong>trading venue</strong>, with execution, spreads, and risk transfer,</li>
+      <li>A <strong>media/data product</strong>, that people cite and lean on for headlines,</li>
+      <li>A <strong>hedging platform</strong>, where traders can de-risk unique tail risks,</li>
+      <li>And a <strong>decision-support tool</strong> or a way to derive signal via market incentives</li>
+    </ul>
+
+    <p>This category has been so hard to analyze because people argue &ldquo;gambling vs forecasting,&rdquo; but that&rsquo;s the wrong axis. The right question to ask is which <strong>user intent</strong> you&rsquo;re serving, and how that maps onto <em>distribution</em>, <em>liquidity</em>, and <em>settlement</em>.</p>
+
+    <h3>User Archetypes</h3>
+
+    <p>Speaking of users, prediction markets have to be specific about who their target market is and, more importantly, who it is not. People come to use these platforms for many reasons, but here are some of the usual participants:</p>
+
+    <p><strong>Information traders:</strong> These users attempt to locate market mispricing and capitalize. They need tight spreads, reliable settlement, and prefer low fees. You could throw &ldquo;information-advantaged&rdquo; (both legitimate and not) traders in here too, which we can explore later.</p>
+
+    <p><strong>Narrative commentators:</strong> These folks express and contest narratives in real time and generally focus on crypto &amp; politics. They value a wide breadth of available markets to be hyper-specific about their views and don&rsquo;t necessarily need super deep liquidity.</p>
+
+    <p><strong>Gamblers:</strong> Value a comfortable balance of market depth and breadth, with an overweighting towards sports markets and a propensity for combo bets/parlays and social attention loops.</p>
+
+    <p><strong>Hedgers:</strong> Generally prefer to trade markets with clear financial/economic exposure (macro releases, policy outcomes, rate decisions) and value deep liquidity and very clear resolution criteria.</p>
+
+    <p><strong>Bots/agents:</strong> Kind of a wildcard to think through, but agents are OK with placing tiny trade amounts and racking up miniscule gains, but they need clean tool access and prefer low fees.</p>
+
+    <p>Once the platform has located its target audience, it can begin optimizing for what they truly value in a prediction market.</p>
+
+    <h3>Rails vs Wrappers and how to map products to users</h3>
+
+    <p>From the platform perspective, we find it helpful to shape a mental model around two layers of the stack:</p>
+
+    <p><strong>Rails</strong> = where liquidity, execution, and settlement live.</p>
+    <p><strong>Wrappers</strong> = where distribution, UX loops, and packaging live.</p>
+
+    <p>The team that owns the distribution does not necessarily have to own the base-layer liquidity. There can be <strong>stack competition</strong> between: who owns the rails, who owns the wrapper, and who can think up clever combinations between the two that serve a target audience.</p>
+
+    <p>In practice, we see this manifest in several distinct &ldquo;product archetypes.&rdquo; Here&rsquo;s how it breaks down.</p>
+
+    <!-- Product Archetype Table -->
+    <div class="table-wrap wide fade-in">
+      <table class="data-table">
+        <thead>
+          <tr><th>Type</th><th>Priority</th><th>Key Features</th><th>Best For</th><th>Drawbacks</th><th>Example(s)</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="type-badge narrative">Narrative Markets</span></td>
+            <td>Attention-first</td>
+            <td>Bespoke (often permissionless) market creation</td>
+            <td>Narrative Participants, (some) Information Traders</td>
+            <td>Worst for Hedgers (too much semantic risk)</td>
+            <td>Polymarket</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge cadence">Cadence Markets</span></td>
+            <td>Retention-first</td>
+            <td>Combos/parlays, attention feedback loops</td>
+            <td>Gamblers (especially sports), casual / mobile users</td>
+            <td>Needs RFQ/quoting mechanics, can lack depth vs. breadth</td>
+            <td>Robinhood, Kalshi, Coinbase</td>
+          </tr>
+          <tr>
+            <td><span class="type-badge hedging">Hedging Markets</span></td>
+            <td>Verification-first</td>
+            <td>Deep liquidity for a smaller set of markets, focused on econ/finance</td>
+            <td>Hedgers, Institutions, (some) Information Traders</td>
+            <td>Narrower catalog, slower listing, higher spec rigor</td>
+            <td>CME, Nasdaq/Cboe(?)</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="chart-caption" style="margin-top:-16px;">Mapping the types of prediction markets to their priorities, key features, etc. Note that these are very broad categories and the products under &ldquo;Examples&rdquo; do not always fit neatly into one bucket.</div>
+
+    <p>Narrative markets such as Polymarket (could also add in Opinion, Limitless, XO Markets, etc.) benefit from the ability to have high specificity in their markets. They are able to take the topics that everyone is chatting about around the watercooler (or, let&rsquo;s face it, on X) and turn them into real-deal betting markets. Their edge is their ability to capture attention and headlines, the speed-to-list new markets, and their de facto position as offering &ldquo;odds&rdquo; as a form of media.</p>
+
+    <p>The obvious risk of a fast-and-loose market generation philosophy is that resolution disputes are inevitable. When money is on the line and the rules are even a little vague, there will be disagreements. And even if they are trending down against adoption (now just 4 disputes per 10,000 markets), the edge cases make the news and frustrate users.</p>
+
+    <!-- Chart: Disputes -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">UMA Dispute Resolution: Disputes Over Time</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="disputeChart" height="280"></canvas></div>
+    </div>
+
+    <p>Cadence Markets leverage the dopamine spikes caused by consistent feedback loops involved in high-cadence markets, with sports betting being the number one vertical. These businesses can be extremely profitable, and they&rsquo;re able to charge higher fees as sportsbetters will generally accept a higher percentage fee compared to, say, an investor or arbitrageur. Venues like Kalshi and Robinhood have begun implementing parlays/combo bets, which ratchet up the profitability of the platforms.</p>
+
+    <blockquote class="callout">Robinhood and Coinbase are actually very interesting case studies of the Rail vs. Wrapper distinction, with both exchanges using Kalshi to solve their cold-start problem during the initial spin up phase. Robinhood has since added their own markets (capturing the Rail business) and Coinbase plans on integrating &ldquo;contracts from additional prediction market platforms in the coming months&rdquo; (establishing themselves as the Wrapper of all Wrappers).</blockquote>
+
+    <p>Spinning up these combo bets can be difficult from a practical and a regulatory point of view. Practically, establishing a RFQ (Request for Quote, where these multi-leg custom bets are offered to many market makers to see who can quote the best price) is more technically difficult than a simple orderbook and tends to fracture liquidity into many small and bespoke buckets instead of keeping dollars in a single book. On top of that, sports betting is already top-of-mind in the eye of regulators, especially at the state level. And by slapping an RFQ system in the mix, this might start to look (to some) more like a dealer-packaged derivative than a simple CLOB matching. (Late breaking: CFTC rules around these may be easing!)</p>
+
+    <p>Hedging Markets are what we perceive to be around the corner. Institutional giants Cboe and Nasdaq are joining in on the party, looking to roll out prediction market options in the near future. We see the focus of this subset to surround real financial exposure (macro releases, policy outcomes, and rate decisions to name a few) so sophisticated investors can specify exact risks they would like to hedge out. Note that CME has been early, but they&rsquo;re off partying with DraftKings and FanDuel, with a larger focus on retail/sportsbetting at the moment.</p>
+
+    <p>Hedging markets will require dead-simple resolution criteria and standardized market creation. These guys aren&rsquo;t gonna mess around with Zelensky&rsquo;s suit, they&rsquo;ll have markets like &ldquo;Will Crude Oil futures be above or below $90.00 at 4PM ET on March 6th, 2026?&rdquo;. These are for risk transfer, not for entertainment. Not very fun, but useful to the poor sap trading airline stocks.</p>
+  </section>
+
+  <!-- ====== SECTION: Polymarket vs Kalshi ====== -->
+  <section id="poly-vs-kalshi">
+    <span class="section-label">Section 03</span>
+    <h2>Polymarket vs Kalshi</h2>
+
+    <p>Speaking of the two titans, let&rsquo;s address the elephant in the room. But I want to be clear up front, this isn&rsquo;t about &ldquo;who wins&rdquo;; <strong>both can be right at the same time</strong> because they&rsquo;re optimizing different parts of the stack and different product archetypes.</p>
+
+    <p>It all comes down to: where does price discovery live, and what kind of user-product bundles does each rail naturally produce?</p>
+
+    <!-- Chart: Market Breadth -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Market Breadth: Qualifying Markets ($1K Liquidity Threshold)</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="breadthChart" height="280"></canvas></div>
+    </div>
+
+    <p>The pair&rsquo;s differences started at the very beginning, with Polymarket setting up an onchain architecture on Polygon and pursuing a later-stage compliance path, while Kalshi built entirely offchain and went down the regulation path before selectively exploring onchain components.</p>
+
+    <blockquote class="callout">This resembles the perps &ldquo;engine vs settlement&rdquo; split: where is matching performed, where is settlement finalized, and how do you anchor your trust? With perp DEXs, this winning architecture seems to be either  - a) an entirely off-chain orderbook + onchain settlement or verification OR b) a high-performant (and mostly centralized) onchain orderbook. It remains to be seen whether Kalshi or Polymarket will arrive at a hybrid conclusion such as this, but I&rsquo;d argue that their final form is yet to be revealed.</blockquote>
+
+    <p>Polymarket is optimizing for long-tail execution scaling with permissionless market generation to cater to whatever their users want to bet on. This hyperspecificity uniquely positions them as the &ldquo;place to trade narratives&rdquo; and basically becomes the likelihood extension of the topic du jour, turning attention into a public probability surface.</p>
+
+    <p>This positions them as a &ldquo;probability&rdquo; brand, and a plausible path is that they continue to parlay this positioning into data partnerships with news organizations and trading venues.</p>
+
+    <p>Their vibe-check-as-a-service architecture means they no longer solely have to rely on trading fees to meet their bottom line. In other words, they become a &ldquo;truth API&rdquo; and organizations pay to get a direct feed.</p>
+
+    <p>At the beginning of 2025, Kalshi made the decision to push heavily into sports. Part of this is likely just product physics: after the 2024 election cycle, the category&rsquo;s &ldquo;always-on&rdquo; attention moved away from politics, and sports is the highest-frequency substrate available - there&rsquo;s always another match, another slate, another moment to trade.</p>
+
+    <p>This pivot is also the cleanest expression of what we&rsquo;ll call Cadence Markets: a subset of prediction markets optimized for high feedback loops and habitual usage. In Cadence Markets, the product goal isn&rsquo;t &ldquo;the world&rsquo;s most philosophically pure probability estimate&rdquo; - it&rsquo;s getting users to return, wager, and repeat. That changes everything about what you build and what you can monetize.</p>
+
+    <!-- Chart: Kalshi Sports -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Kalshi: Sports vs Non-Sports Volume Share</div>
+        <div class="chart-controls">
+          <button class="chart-btn active" data-chart="kalshiSportsChart" data-view="absolute">Absolute</button>
+          <button class="chart-btn" data-chart="kalshiSportsChart" data-view="relative">Relative %</button>
+        </div>
+      </div>
+      <div class="chart-wrapper"><canvas id="kalshiSportsChart" height="280"></canvas></div>
+    </div>
+
+    <p>Combos (parlay-like packaging) are the retention superweapon here. They let users express richer views, feel like &ldquo;builders&rdquo; rather than simple bettors, and keep them engaged across a calendar of events instead of a handful of headline markets.</p>
+
+    <p>But combos also force a structural reality: you need someone willing to quote the bundle. In practice, that pushes you toward RFQ-style mechanics and tighter risk management, because you&rsquo;re no longer just matching two-sided flow in a single contract - you&rsquo;re packaging legs into a single exposure that must be priced and warehoused, at least temporarily.</p>
+
+    <p>The distribution strategy fits the archetype. Retail sports flow is far more UX-sensitive than fee-sensitive - most users only care about frictionless onboarding, fast feedback, and the ability to close positions easily. That&rsquo;s precisely why Kalshi&rsquo;s partnerships with brokers/wrappers (like Coinbase and Robinhood) matter: a large distribution surface concentrates flow, concentrated flow tightens execution, tighter execution improves retention, and better retention attracts more liquidity provision. That flywheel is hard to replicate if you&rsquo;re not plugged into where users already trade.</p>
+
+    <!-- Chart: Displacement by Decile -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">The Execution Cliff: Displacement by Market Decile</div>
+        <div class="chart-toggle">
+          <button class="chart-btn active" data-chart="decileChart" data-view="all">All</button>
+          <button class="chart-btn" data-chart="decileChart" data-view="kalshi_yoy">Kalshi YoY</button>
+          <button class="chart-btn" data-chart="decileChart" data-view="poly_yoy">Poly YoY</button>
+          <button class="chart-btn" data-chart="decileChart" data-view="2024_platform">2024</button>
+          <button class="chart-btn" data-chart="decileChart" data-view="2025_platform">2025</button>
+        </div>
+      </div>
+      <div class="chart-wrapper"><canvas id="decileChart" height="300"></canvas></div>
+      <div class="chart-caption">Displacement by market decile. Fun fact, Kalshi actually edges out Polymarket on the top volume pools when it comes to realized execution costs. Data from <a href="https://github.com/Jon-Becker/prediction-market-analysis">Jon Becker&rsquo;s prediction-market-analysis</a>, methodology explained later in the report. Top volume markets on left, smallest on right. Lower = better execution.</div>
+    </div>
+
+    <p>The takeaway is that we&rsquo;re witnessing specialization - we&rsquo;re watching <strong>rails and wrappers recombine into different product archetypes</strong>. Kalshi&rsquo;s cadence-first path is one extreme; Polymarket&rsquo;s narrative-first path is the other. The next section goes deeper: we have the current frontrunning rails, but where does the rest of the ecosystem stand?</p>
+
+    <!-- Widget: Execution Cost Calculator -->
+    <div class="chart-container wide fade-in" style="padding:24px 28px">
+      <div class="chart-title" style="margin-bottom:4px">Try it: Execution Cost Calculator</div>
+      <p class="chart-desc">How much would your trade actually cost? Pick a platform, trade size, and market tier to estimate your all-in execution costs.</p>
+      <div style="display:flex;gap:24px;flex-wrap:wrap;margin:16px 0">
+        <div style="flex:1;min-width:180px">
+          <label class="widget-label">Platform</label>
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <button class="chart-btn active" id="rpt-exec-poly" onclick="updateRptExecCalc('polymarket')">Polymarket</button>
+            <button class="chart-btn" id="rpt-exec-kalshi" onclick="updateRptExecCalc('kalshi')">Kalshi</button>
+          </div>
+        </div>
+        <div style="flex:1;min-width:220px">
+          <label class="widget-label">Trade Size</label>
+          <div class="tick-slider-wrap" style="--steps:6">
+            <input type="range" id="rpt-exec-size" min="0" max="5" step="1" value="2">
+            <div class="tick-marks"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="tick-labels"><span>&lt;$1</span><span>$1-10</span><span>$10-100</span><span>$100-1K</span><span>$1K-10K</span><span>&gt;$10K</span></div>
+          </div>
+        </div>
+        <div style="flex:1;min-width:220px">
+          <label class="widget-label">Market Tier (by volume)</label>
+          <div class="tick-slider-wrap" style="--steps:9">
+            <input type="range" id="rpt-exec-decile" min="0" max="8" step="1" value="0">
+            <div class="tick-marks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+            <div class="tick-labels"><span>Top 10%</span><span>20%</span><span>30%</span><span>40%</span><span>50%</span><span>60%</span><span>70%</span><span>80%</span><span>Bottom</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:12px">
+        <div class="widget-stat-card"><div class="widget-stat-label">Displacement</div><div class="widget-stat-value" id="rpt-exec-displacement">0.50&cent;</div></div>
+        <div class="widget-stat-card"><div class="widget-stat-label">Spread</div><div class="widget-stat-value" id="rpt-exec-spread">0.80&cent;</div></div>
+        <div class="widget-stat-card"><div class="widget-stat-label">Round-Trip Cost</div><div class="widget-stat-value" id="rpt-exec-total">$0.13</div><div class="widget-stat-detail">On a <span id="rpt-exec-trade-label">$50</span> trade</div></div>
+      </div>
+      <p style="font-size:0.68rem;color:rgba(237,230,221,0.25);margin-top:10px">Based on real data from <a href="#" onclick="event.preventDefault();document.querySelector('[data-view=dashboard]').click();setTimeout(()=>document.getElementById('db-decileChart')?.scrollIntoView({behavior:'smooth',block:'center'}),300)" style="color:#93aaff;cursor:pointer">S6-14</a>, <a href="#" onclick="event.preventDefault();document.querySelector('[data-view=dashboard]').click();setTimeout(()=>document.getElementById('db-displacementChart')?.scrollIntoView({behavior:'smooth',block:'center'}),300)" style="color:#93aaff;cursor:pointer">S6-07</a>, and <a href="#" onclick="event.preventDefault();document.querySelector('[data-view=dashboard]').click();setTimeout(()=>document.getElementById('db-bounceChart')?.scrollIntoView({behavior:'smooth',block:'center'}),300)" style="color:#93aaff;cursor:pointer">S6-06</a> across 476M trades.</p>
+      <p style="font-size:0.68rem;color:rgba(237,230,221,0.25);margin-top:4px">&#9888; These execution costs reflect spread and displacement only - they do not include platform trading fees. With <a href="https://docs.polymarket.com/trading/fees" target="_blank" style="color:#93aaff">Polymarket&rsquo;s new fee structure</a> (effective March 30, 2026), actual all-in costs will be higher. Kalshi has charged fees since inception; Polymarket&rsquo;s historical data was largely fee-free.</p>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: Where the money is ====== -->
+  <section id="money">
+    <span class="section-label">Section 04</span>
+    <h2>Where the money is actually being made</h2>
+
+    <p>With both leaders&rsquo; private valuations pushing into the 11 figures, they have to show a path to profit at some point, so it&rsquo;s no surprise that Polymarket recently joined Kalshi in charging fees on most markets. But the comparison is not quite apples-to-apples, with each side using their fee structure to signal which users they truly optimize for.</p>
+
+    <!-- Fee Anatomy Widget (inline in report) -->
+    <div class="chart-container wide fade-in" id="rpt-widget-fees" style="padding:24px 28px">
+      <div class="chart-title" style="margin-bottom:4px;font-size:1.2rem">The Anatomy of Polymarket and Kalshi&rsquo;s Fees</div>
+      <p class="chart-desc">How do effective taker fee rates compare across platforms and market categories? Polymarket&rsquo;s <a href="https://docs.polymarket.com/trading/fees" target="_blank">new fee structure</a> (effective March 30, 2026) introduces category-specific rates with different curve shapes. Kalshi uses a <a href="https://help.kalshi.com/trading/fees" target="_blank">uniform formula</a> with a halved rate for index markets. Click legend items to toggle lines on/off.</p>
+      <div style="margin:16px 0">
+        <div id="rptFeeLegend" style="margin-bottom:10px;font-size:0.75rem">
+          <div style="display:flex;gap:16px;align-items:center;margin-bottom:6px">
+            <span style="color:rgba(237,230,221,0.35);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em">Kalshi:</span>
+            <div class="rpt-fee-legend-item" data-idx="9" style="display:flex;align-items:center;gap:5px;cursor:pointer"><span style="display:inline-block;width:20px;height:3px;background:#00de95;border-radius:2px"></span><span style="color:#00de95">Standard</span></div>
+            <div class="rpt-fee-legend-item" data-idx="10" style="display:flex;align-items:center;gap:5px;cursor:pointer"><span style="display:inline-block;width:20px;height:3px;background:#00de95;border-radius:2px;opacity:0.5"></span><span style="color:rgba(0,222,149,0.6)">S&amp;P/Nasdaq</span></div>
+          </div>
+          <div style="display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+            <span style="color:rgba(237,230,221,0.35);font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;align-self:center">Polymarket:</span>
+            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:1px">
+              <span style="color:rgba(237,230,221,0.25);font-size:0.58rem;line-height:1">exp=0.5</span>
+              <div style="display:flex;gap:8px">
+                <div class="rpt-fee-legend-item" data-idx="0" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#a78bfa;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Economics</span></div>
+                <div class="rpt-fee-legend-item" data-idx="1" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#f97316;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Weather</span></div>
+              </div>
+            </div>
+            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:1px">
+              <span style="color:rgba(237,230,221,0.25);font-size:0.58rem;line-height:1">exp=1</span>
+              <div style="display:flex;gap:8px">
+                <div class="rpt-fee-legend-item" data-idx="2" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#2f5cff;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Crypto</span></div>
+                <div class="rpt-fee-legend-item" data-idx="3" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#e6a93e;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Sports</span></div>
+                <div class="rpt-fee-legend-item" data-idx="4" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#93aaff;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Finance/Politics/Tech</span></div>
+                <div class="rpt-fee-legend-item" data-idx="5" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#c46560;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Culture</span></div>
+              </div>
+            </div>
+            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:1px">
+              <span style="color:rgba(237,230,221,0.25);font-size:0.58rem;line-height:1">exp=2</span>
+              <div style="display:flex;gap:8px">
+                <div class="rpt-fee-legend-item" data-idx="6" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#e879a8;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Other</span></div>
+                <div class="rpt-fee-legend-item" data-idx="7" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#38bdf8;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Mentions</span></div>
+              </div>
+            </div>
+            <div style="display:inline-flex;flex-direction:column;align-items:center;gap:1px">
+              <span style="color:rgba(237,230,221,0.25);font-size:0.58rem;line-height:1">free</span>
+              <div style="display:flex;gap:8px">
+                <div class="rpt-fee-legend-item" data-idx="8" style="display:flex;align-items:center;gap:4px;cursor:pointer"><span style="display:inline-block;width:14px;height:3px;background:#ef4444;border-radius:2px"></span><span style="color:rgba(237,230,221,0.6)">Geopolitical</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+          <div class="chart-toggle">
+            <button class="chart-btn active" data-chart="rptFeeCompChart" data-view="rate">Effective Rate (%)</button>
+            <button class="chart-btn" data-chart="rptFeeCompChart" data-view="dollar">Fee per 100 ($)</button>
+          </div>
+        </div>
+        <div class="chart-wrapper" style="height:400px"><canvas id="rptFeeCompChart"></canvas></div>
+      </div>
+      <div class="chart-caption" id="rptFeeCaption" style="margin-bottom:20px">Effective fee rate = fee &divide; cost of shares. Polymarket&rsquo;s curves are symmetric; Kalshi&rsquo;s declines linearly because its formula taxes potential payout, not share price. Sources: <a href="https://docs.polymarket.com/trading/fees" target="_blank">Polymarket docs</a>, <a href="https://help.kalshi.com/trading/fees" target="_blank">Kalshi help center</a>.</div>
+
+      <div style="border-top:1px solid rgba(237,230,221,0.08);padding-top:20px">
+        <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:0.95rem;color:var(--bm-cream);margin-bottom:12px">Why the curves are shaped differently</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px">
+          <div style="padding:14px 18px;background:rgba(0,222,149,0.04);border:1px solid rgba(0,222,149,0.12);border-radius:8px">
+            <div style="font-weight:700;color:#00de95;font-size:0.85rem;margin-bottom:6px">Kalshi: Tax on Expected Profit</div>
+            <p style="font-size:0.8rem;color:rgba(237,230,221,0.6);line-height:1.5;margin:0">The formula <code style="color:rgba(237,230,221,0.8)">rate &times; P &times; (1&minus;P)</code> taxes the variance of your payout - maximum at 50/50 (peak uncertainty), zero at the extremes. Your effective rate is <code style="color:rgba(237,230,221,0.8)">rate &times; (1&minus;P)</code>: longshot buyers at 5&cent; pay ~6.7%, while near-certainties at 95&cent; pay ~0.35%.</p>
+          </div>
+          <div style="padding:14px 18px;background:rgba(47,92,255,0.04);border:1px solid rgba(47,92,255,0.12);border-radius:8px">
+            <div style="font-weight:700;color:#93aaff;font-size:0.85rem;margin-bottom:6px">Polymarket: Category-Tuned Fee Curves</div>
+            <p style="font-size:0.8rem;color:rgba(237,230,221,0.6);line-height:1.5;margin:0">The formula <code style="color:rgba(237,230,221,0.8)">feeRate &times; (P(1&minus;P))<sup>exp</sup></code> is symmetric - you pay the same effective rate at 20&cent; and 80&cent;. But the <strong>exponent</strong> and <strong>rate</strong> vary by category, letting Polymarket price each market type differently. Geopolitical is free (maximizing the data surface), Politics is cheap, Crypto is expensive.</p>
+          </div>
+        </div>
+
+        <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:0.95rem;color:var(--bm-cream);margin-bottom:12px">How fee design maps to market archetypes</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+          <div style="padding:14px 16px;background:rgba(237,230,221,0.02);border:1px solid rgba(237,230,221,0.06);border-radius:8px">
+            <div style="font-weight:700;font-size:0.82rem;margin-bottom:6px"><span style="color:#80a76a">&#9679;</span> Cadence Markets</div>
+            <p style="font-size:0.78rem;color:rgba(237,230,221,0.55);line-height:1.5;margin:0"><strong style="color:rgba(237,230,221,0.7)">Kalshi:</strong> Retail entertainment flow on longshots pays higher effective rates - subsidizing the platform through volume count.<br><strong style="color:rgba(237,230,221,0.7)">Polymarket:</strong> Sports (0.75% peak) is the cheapest non-free category, designed to attract high-frequency repeat engagement. <code style="font-size:0.72rem">exp=1</code></p>
+          </div>
+          <div style="padding:14px 16px;background:rgba(237,230,221,0.02);border:1px solid rgba(237,230,221,0.06);border-radius:8px">
+            <div style="font-weight:700;font-size:0.82rem;margin-bottom:6px"><span style="color:#2f5cff">&#9679;</span> Narrative Markets</div>
+            <p style="font-size:0.78rem;color:rgba(237,230,221,0.55);line-height:1.5;margin:0"><strong style="color:rgba(237,230,221,0.7)">Kalshi:</strong> Same formula as everything else - no special treatment for attention-driven flow.<br><strong style="color:rgba(237,230,221,0.7)">Polymarket:</strong> Politics/Finance/Tech at 1.00% peak; Geopolitical is <em>completely free</em> - subsidizing the &ldquo;probability surface&rdquo; that powers media embeds and data licensing. <code style="font-size:0.72rem">exp=1</code></p>
+          </div>
+          <div style="padding:14px 16px;background:rgba(237,230,221,0.02);border:1px solid rgba(237,230,221,0.06);border-radius:8px">
+            <div style="font-weight:700;font-size:0.82rem;margin-bottom:6px"><span style="color:#e6a93e">&#9679;</span> Hedging Markets</div>
+            <p style="font-size:0.78rem;color:rgba(237,230,221,0.55);line-height:1.5;margin:0"><strong style="color:rgba(237,230,221,0.7)">Kalshi:</strong> Institutional hedgers buying at 90&cent;+ pay &lt;0.7% effective rate - the formula naturally rewards precision risk-transfer. S&amp;P/Nasdaq halved to 0.035.<br><strong style="color:rgba(237,230,221,0.7)">Polymarket:</strong> Economics/Weather use <code style="font-size:0.72rem">exp=0.5</code> - a flatter curve that still charges at extreme prices where informed traders operate.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p>A few things jump out. Polymarket undercuts Kalshi in <strong>every single fee-bearing category at every price point up to 90&cent;</strong>. Even Crypto, Polymarket&rsquo;s most expensive category at a 1.80% peak effective rate, is roughly half of Kalshi&rsquo;s 3.50% at 50/50 odds. Kalshi only becomes competitive at extreme near-certainties (90&cent;+), where its effective rate drops below 0.7% - precisely the price range where institutional hedgers operate. That&rsquo;s not an accident.</p>
+
+    <p>Meanwhile, Kalshi&rsquo;s halved S&amp;P/Nasdaq rate (0.035 vs 0.07) is a targeted concession to win index-derivative flow from TradFi. But even at half rate, it still costs more than Polymarket&rsquo;s Economics category at every price except 99&cent;. The message: Kalshi is betting that compliance credibility and settlement enforceability justify the premium, while Polymarket is betting that lower fees plus permissionless market creation will win on volume.</p>
+
+    <p>And then there&rsquo;s Polymarket&rsquo;s decision to make geopolitical markets completely free - it signals that the real monetization isn&rsquo;t in trading fees at all, but in the data surface those markets create.</p>
+
+    <p>Remember to think in terms of the stack - execution fees are not the only place to charge rent. Often, the largest rents sit at:</p>
+
+    <h3 class="table-section-heading"><span class="layer-badge rail">Rails</span>  - Where execution and settlement live</h3>
+    <div class="table-wrap wide fade-in">
+      <table class="data-table">
+        <thead>
+          <tr><th>Strategy</th><th>What they capture</th><th>Examples</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong class="strategy-name">Crypto-native execution</strong></td><td>Trading fees / take-rate; liquidity network effects; &ldquo;reference&rdquo; probability surface</td><td><a href="https://polymarket.com" target="_blank" class="project-tag poly">Polymarket</a>  - positioned as the &ldquo;world&rsquo;s largest prediction market&rdquo;</td></tr>
+          <tr><td><strong class="strategy-name">Regulated execution</strong></td><td>Trading fees; settlement enforceability; compliance credibility that enables broker distribution</td><td><a href="https://kalshi.com" target="_blank" class="project-tag kalshi">Kalshi</a>  - seeded by <a href="https://www.coinbase.com/es-us/blog/system-update-the-future-of-finance-is-on-coinbase" target="_blank" class="project-tag kalshi">Coinbase</a>, <a href="https://robinhood.com/newsroom/robinhood-prediction-markets-hub/" target="_blank" class="project-tag kalshi">Robinhood</a>, and <a href="https://www.interactivebrokers.com/en/trading/eventcontracts.php" target="_blank" class="project-tag kalshi">Interactive Brokers</a></td></tr>
+          <tr><td><strong class="strategy-name">TradFi hedging-grade entrants</strong></td><td>Standardized, spec-heavy contracts under existing options/clearing regimes</td><td><a href="https://www.theblock.co/post/391784/nasdaq-sec-prediction-style-binary-options-flagship-100-index-bloomberg" target="_blank" class="project-tag tradfi">Nasdaq</a> <a href="https://ir.cboe.com/news/news-details/2026/Cboe-Introduces-Innovative-Prediction-Markets-Framework-Expanding-Choice-Beyond-Yes-Or-No-Outcomes/default.aspx" target="_blank" class="project-tag tradfi">Cboe</a> <a href="https://www.cmegroup.com/markets/prediction-markets.html" target="_blank" class="project-tag tradfi">CME</a>  - outcome-related options frameworks</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="table-section-heading"><span class="layer-badge wrapper">Wrappers</span>  - Where distribution and monetization live</h3>
+    <div class="table-wrap wide fade-in">
+      <table class="data-table">
+        <thead>
+          <tr><th>Strategy</th><th>What they capture</th><th>Examples</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong class="strategy-name">Retail broker distribution</strong></td><td>Order flow + retention loops; cross-sell/wallet share; routing leverage over rails</td><td><a href="https://www.coinbase.com/es-us/blog/system-update-the-future-of-finance-is-on-coinbase" target="_blank" class="project-tag kalshi">Coinbase</a> <a href="https://robinhood.com/newsroom/robinhood-prediction-markets-hub/" target="_blank" class="project-tag kalshi">Robinhood</a>  - both seeded with Kalshi</td></tr>
+          <tr><td><strong class="strategy-name">Consumer gaming distribution</strong></td><td>Mobile + high-frequency engagement; same as above, optimized for cadence</td><td><a href="https://www.cmegroup.com/media-room/press-releases/2025/11/12/fanduel_and_cme_groupunveilnewpredictionmarketsplatformtolaunchi.html" target="_blank" class="project-tag tradfi">FanDuel Predicts</a>  - built on CME rails</td></tr>
+          <tr><td><strong class="strategy-name">Institutional front-ends</strong></td><td>Embedding event contracts into existing macro/risk workflows</td><td><a href="https://www.tradeweb.com/newsroom/media-center/news-releases/tradeweb-and-kalshi-announce-strategic-partnership-to-expand-institutional-access-to-prediction-markets/" target="_blank" class="project-tag kalshi">Tradeweb</a> &harr; Kalshi partnership</td></tr>
+          <tr><td><strong class="strategy-name">Media / publisher embeds</strong></td><td>Licensing fees for &ldquo;probability-as-media&rdquo; modules</td><td><a href="https://www.nasdaq.com/press-release/polymarket-and-dow-jones-publisher-wall-street-journal-announce-exclusive-prediction" target="_blank" class="project-tag poly">Dow Jones</a> &harr; Polymarket (WSJ/Barron&rsquo;s/MarketWatch). <a href="https://www.reuters.com/business/media-telecom/cnbc-signs-deal-with-kalshi-add-prediction-data-next-year-2025-12-04/" target="_blank" class="project-tag kalshi">CNBC</a> &harr; Kalshi</td></tr>
+          <tr><td><strong class="strategy-name">Institutional data feeds</strong></td><td>Enterprise data distribution; &ldquo;event-driven data&rdquo; as a product</td><td><a href="https://www.ft.com/content/9437b5b5-59c0-44a3-8b25-58b3b4aa1b0c" target="_blank" class="project-tag poly">ICE</a> &harr; Polymarket: global distribution of event-driven data</td></tr>
+          <tr><td><strong class="strategy-name">Analytics terminals</strong></td><td>Subscription/lead-gen; flow intelligence (who&rsquo;s buying/selling)</td><td><a href="https://predictfolio.com/" target="_blank" class="project-tag neutral">PredictFolio</a>  - portfolio tracking for Polymarket</td></tr>
+          <tr><td><strong class="strategy-name">Execution terminals / bots</strong></td><td>Power-user UX; advanced orders; cross-venue access</td><td><a href="https://docs.flipr.bot/" target="_blank" class="project-tag neutral">Flipr</a>  - cross-platform Polymarket/Kalshi</td></tr>
+          <tr><td><strong class="strategy-name">Discovery / aggregation</strong></td><td>&ldquo;Best available&rdquo; discovery; paired-market comparison</td><td><a href="https://www.oddpool.com/explore" target="_blank" class="project-tag neutral">Oddpool</a> <a href="https://www.marketpinger.com/" target="_blank" class="project-tag neutral">MarketPinger</a>  - cross-platform search + gap detection</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>While rails capture the trading fees, the wrappers have freedom to experiment with financialization. They could charge:</p>
+    <ul>
+      <li><strong>Attention rent</strong> by owning the default location where probabilities are consumed,</li>
+      <li><strong>Flow rent</strong> by controlling the funnel/routing choices to different rails,</li>
+      <li><strong>Cross-sell rent</strong> by pushing add-ons to users while leveraging the high-engagement prediction markets,</li>
+      <li>Or embed their own <strong>custom monetization</strong> through strategies like spreads on funding rails, subscriptions, premium tools, or even just plain old ads.</li>
+    </ul>
+
+    <!-- Widget: Revenue Waterfall -->
+    <div class="chart-container wide fade-in" style="padding:24px 28px">
+      <div class="chart-title" style="margin-bottom:4px">Revenue Waterfall: Where Rent Accrues</div>
+      <p class="chart-desc">Follow a dollar of trading volume as it flows through the prediction market stack. Hover over any node to highlight its connections.</p>
+      <canvas id="rptSankeyCanvas" height="380" style="width:100%"></canvas>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:12px">
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#2f5cff;display:inline-block"></span><span style="font-size:0.72rem;color:rgba(237,230,221,0.5)">Polymarket</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#00de95;display:inline-block"></span><span style="font-size:0.72rem;color:rgba(237,230,221,0.5)">Kalshi</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#c46560;display:inline-block"></span><span style="font-size:0.72rem;color:rgba(237,230,221,0.5)">TradFi</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#e6a93e;display:inline-block"></span><span style="font-size:0.72rem;color:rgba(237,230,221,0.5)">Wrappers</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#fe5915;display:inline-block"></span><span style="font-size:0.72rem;color:rgba(237,230,221,0.5)">Data / Media</span></div>
+      </div>
+      <p style="font-size:0.68rem;color:rgba(237,230,221,0.25);margin-top:8px">&#9888; Flow sizes are illustrative and represent relative magnitude, not exact dollar amounts. Actual revenue splits are not publicly disclosed by either platform.</p>
+    </div>
+
+    <p>As wrappers (like brokers and media) distribute across many rails, they will demand standardized contract specifications with comparable markets, so rails that lead this charge could be rewarded with quick integrations.</p>
+
+    <p>An entire ecosystem of applications, powered by this novel primitive, and it goes far beyond the minimizing &ldquo;Polymarket vs. Kalshi&rdquo; debate - we&rsquo;re talking about dozens of killer businesses at the periphery that are about to be enabled. But most of these businesses will only work where liquidity is real and contract specs are legible.</p>
+
+    <p>And who will be paying for these services?</p>
+
+    <p>Again, it breaks down by the type of market we&rsquo;re talking about and what layer of the stack is in focus:</p>
+    <ul>
+      <li><strong>Cadence Markets:</strong> rail fees are funded by retail entertainment flow; wrapper economics are funded by retention loops and cross-sell.</li>
+      <li><strong>Narrative Markets:</strong> rail fees are funded by attention-driven trading; wrapper economics can be funded by probability-as-data distribution (publisher/institutional embeds) plus power-user tooling.</li>
+      <li><strong>Hedging Markets:</strong> rail fees are funded by hedgers and informed traders; wrapper economics are funded by workflow embedding (brokers/terminals) and trust/permissioning.</li>
+    </ul>
+
+    <p>Of course, this is a simplification. After all, Polymarket has sports markets and Kalshi has politics and crypto, but we see these as examples of <strong>cross-selling</strong> to users, not the platforms&rsquo; main courses. You go to Kalshi to bet on the Super Bowl and realize they have midterm markets too, how convenient. It&rsquo;s the same as 7-11 enticing you with BigGulps and Funyuns when you go in to get your daily scratchers, it&rsquo;s just good business.</p>
+
+    <p>The stack explains where value can accrue. User behavior determines whether it does. If Cadence Markets are powered by high-frequency retail flow, Narrative Markets by attention + positioning, and Hedging Markets by informed hedgers, then the next question is: do the observed flows actually match those stories? Let&rsquo;s look at <em>who trades</em>, <em>how they trade</em>, and what that implies about where true price discovery lives.</p>
+
+    <!-- Chart: Volume Concentration -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Volume Concentration: Power Law Distribution</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="concentrationChart" height="280"></canvas></div>
+    </div>
+  </section>
+
+  <!-- ====== SECTION: User Behavior ====== -->
+  <section id="behavior">
+    <span class="section-label">Section 05</span>
+    <h2>User behavior and onchain patterns</h2>
+
+    <p>For prediction markets especially, <em>who trades</em> and <em>how they trade</em> matters more than in most asset classes because each individual market is really a one-off micro-asset. Trading price of the markets only becomes <strong>signal</strong> when the right cohort is in the trenches.</p>
+
+    <p>We&rsquo;re gonna track four distinct behaviors across the sector and use it to answer some key questions:</p>
+    <ul>
+      <li><strong>Participation breadth &amp; retention:</strong> is this a one-off spike or are habits forming?</li>
+      <li><strong>Concentration:</strong> can we assume wisdom-of-the-crowds or is everything whale dominated?</li>
+      <li><strong>Trading posture:</strong> are users mostly opening simple positions or actively managing risk?</li>
+      <li><strong>Liquidity assumptions:</strong> are market makers helping users easily enter/exit?</li>
+    </ul>
+
+    <p>The answers to these questions will clue us into the health of the sector as well as how well the leaders are optimizing for their target audience.</p>
+
+    <h3>Participation breadth and retention (what adoption looks like)</h3>
+
+    <p>Top-line numbers are looking great, with Polymarket breaking 300K unique returning users per week and consistently adding 30-50K new users to go along with it.</p>
+
+    <p>This broadening participation and improving retention tells us that prediction markets as a sector have graduated from an event-driven curiosity to a mainstay. People aren&rsquo;t just checking into the markets when an election is in full swing, they are using it to check the pulse of the world (and to participate in the commotion).</p>
+
+    <!-- Chart: New vs Returning -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Polymarket: New vs Returning Traders (Weekly)</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="tradersChart" height="300"></canvas></div>
+      <div class="chart-caption">Weekly new and returning users for Polymarket, counting unique wallet addresses. Note that Kalshi does not keep this data onchain.</div>
+    </div>
+
+    <h3>Concentration and whale dominance (is &ldquo;wisdom of the crowds&rdquo; possible?)</h3>
+
+    <p>For a prediction market to, well, predict, it requires a critical mass. This is real science by the way, studies have shown (Standford/UCSD study, PDF warning) that &ldquo;aggregate opinions of groups are often more accurate than those of the constituent individuals.&rdquo; Which is why Polymarket <em>absolutely smoked</em> pollsters in the 2024 election cycle.</p>
+
+    <p>Polymarket in particular has faced heavy scrutiny for alleged insider trading taking place on its platform and has recently partnered with the likes of Palantir and TWG to shore up its defences. Regardless, we&rsquo;d like to see that it isn&rsquo;t simply a few big whales making wild swings on most markets, but a wide cross-section of users from all over the world.</p>
+
+    <!-- Chart: Whale Dominance -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Polymarket Trader Concentration (Whale Dominance)</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="whaleChart" height="300"></canvas></div>
+      <div class="chart-caption">Tracking the share of volume traded on Polymarket by the top 10/50/100 traders between early 2024 to present day. Note that when Kalshi isn&rsquo;t included in the discussions, it&rsquo;s simply because their data wasn&rsquo;t available.</div>
+    </div>
+
+    <p>On Polymarket in particular, we see &ldquo;whale dominance&rdquo; declining, with the top 100 traders by volume going from &gt;95% of platform volume in 2024 to 61% today. We see this as a maturity signal, reducing manipulation/narrative risk and making Polymarket&rsquo;s probability-as-media roadmap much more credible.</p>
+
+    <h3>What trading posture tells us about who uses these markets</h3>
+
+    <p>Casual users and traders display different patterns of behavior - and we can see it in the data.</p>
+
+    <p>For Kalshi, we see a clear preference for traders to take the &ldquo;YES&rdquo; side over &ldquo;NO,&rdquo; especially in 2025, by a 2.49x margin.</p>
+
+    <!-- Chart: Kalshi Taker -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Kalshi: Taker YES/NO Ratio by Year</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="kalshiTakerChart" height="240"></canvas></div>
+      <div class="chart-caption">&#9888; Pre-fee behavior. Kalshi has charged fees since inception, but the introduction of fees on Polymarket (March 2026) may shift taker patterns on both platforms as relative costs change.</div>
+    </div>
+
+    <p>When we remember that the majority of Kalshi volume has been in sports markets, this begins to make sense. On most of these markets, buying &ldquo;Toronto YES&rdquo; (as below) is economically similar to buying &ldquo;Phoenix NO,&rdquo; so the YES/NO split is better read as: how users choose to express the view (with the affirmative framing and UI defaults), not a directional asymmetry in economics.</p>
+
+    <p>Put another way, people prefer to click the positive proposition, betting on their team to win rather than on their opponent to lose.</p>
+
+    <p>This suggests that we&rsquo;re witnessing a lot of retail activity, since you&rsquo;d expect a more balanced weighting from a price-sensitive buyer (assuming better prices are distributed evenly between the YES and NO sides for a large enough pool of markets).</p>
+
+    <p>As far as price takers on the Polymarket side, we see that SELLs dominate the BUYs by a wide margin. This supports a &ldquo;more trader-like posture&rdquo; story, suggesting that a meaningful share of takers are hedging/liquidating, not only opening fresh directional bets.</p>
+
+    <!-- Chart: Poly Taker -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Polymarket: Taker BUY/SELL Ratio by Year</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="polyTakerChart" height="240"></canvas></div>
+      <div class="chart-caption">&#9888; Polymarket&rsquo;s historical taker data was collected in a largely fee-free environment. The introduction of category-specific fees may alter the buy/sell balance, particularly in higher-fee categories like Crypto (1.80% peak).</div>
+    </div>
+
+    <p>This all tracks with our assumption that Cadence Markets (like Kalshi) cater to retail flow (who you could classify more on the &ldquo;gambler&rdquo; side) and Narrative Markets (like Polymarket) are more suited for trader activity (with participation from our Information traders, Narrative commentators, and some Hedgers).</p>
+
+    <h3>Near-resolution dynamics and the market-maker question</h3>
+
+    <p>Unlike traditional options markets, market makers face off in a game of chicken when it comes to holding their positions close to expiration. The binary payoffs (0 vs. 1) make inventory risk a serious concern for market makers, with small information shocks or late news meaning a complete wipe out of inventory PnL. The knee-jerk reaction to this would be to: quote smaller, widen spreads, or reduce presence altogether as the expiration draws nearer.</p>
+
+    <p>We observe this phenomenon in the data, with spreads and price impact actually increasing as resolution draws nearer, indicating that liquidity thins out when the end draws near.</p>
+
+    <!-- Chart: Settlement Spread -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Spread Widening Approaching Resolution</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="settlementSpreadChart" height="240"></canvas></div>
+    </div>
+
+    <!-- Chart: Settlement Impact -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Price Impact Increasing Approaching Resolution</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="settlementImpactChart" height="240"></canvas></div>
+      <div class="chart-caption">A view of how price impact and spreads change over the lifecycle of a generic market. Important note: spreads were not measured directly, but from a proxy known as &ldquo;bounce&rdquo; as we don&rsquo;t have orderbook quotes in the datasets. Bounce is the absolute price change between consecutive opposite-signed trades in the same market. Likewise, price impact is not measured directly. We actually measure absolute price change between a trade and the immediately following trade in the same market. This is an unsigned, next-trade-based displacement that captures &ldquo;how far did the price move right after a large trade?&rdquo; It overstates true impact when prices are noisy and understates it when impact takes multiple trades to materialize, but it provides a consistent, order-book-free comparison across platforms and time periods. While these are not perfect, they should be directionally correct over the wide range investigated (~476M trades).</div>
+    </div>
+
+    <p>That is our interpretation of the data, anyway. It could be argued that other forces are at play, such as a tendency for traders to size heavier into markets that are close to expiry or for traders to accept higher slippage to jam their bids in at the late stages. This would go along with the idea that platform-aligned market makers have obligations to support markets to completion. We leave it up to the reader to come to their own conclusions.</p>
+
+    <p>It&rsquo;s important to understand the user posture because that tees up which wrappers will win (brokers vs terminals vs media), and near-resolution liquidity dynamics shape which product archetypes can scale (Cadence vs Narrative vs Hedging).</p>
+
+    <p>So the debate isn&rsquo;t &ldquo;gambling vs forecasting.&rdquo; It&rsquo;s whether these products can reliably convert attention into tradeable markets without breaking at the moments that matter most - near resolution, during shocks, and in thin long-tail contracts. Every major innovation we&rsquo;re seeing is aimed at one of those failure points: <strong>packaging</strong> (combos), <strong>liquidity provision</strong>, <strong>distribution surfaces</strong>, and new contract formats that broaden what can be traded. Let&rsquo;s look at what&rsquo;s actually new.</p>
+
+  </section>
+
+  <!-- ====== SECTION: Innovations ====== -->
+  <section id="innovations">
+    <span class="section-label">Section 06</span>
+    <h2>Key innovations (what&rsquo;s actually new)</h2>
+
+    <p>This is not going to be a one-stop-shop for every new app in the prediction market space. Instead, we&rsquo;re going to use this section to look for leverage points - which changes are actually capable of moving liquidity, trust, retention, and/or distribution.</p>
+
+    <!-- Innovation 1 -->
+    <div class="innovation-item" onclick="this.classList.toggle('open')">
+      <div class="innovation-header">
+        <span class="innovation-num">1</span>
+        <span class="innovation-name">Perps-native &ldquo;outcome primitives&rdquo;</span>
+        <span class="innovation-toggle">+</span>
+      </div>
+      <div class="innovation-body">
+        <p><strong>What changed:</strong> Perps venues are experimenting with outcome markets as a generalized contract type, trying to absorb event risk into a perps-native stack.</p>
+        <p><strong>Why it matters:</strong> If successful, this is the cleanest &ldquo;event risk becomes a standard trading primitive&rdquo; path for crypto-native traders (margining, UX, distribution already exists).</p>
+        <p><strong>Examples:</strong></p>
+        <div class="innovation-example">Hyperliquid HIP-4 &ldquo;Outcome Markets&rdquo; live on testnet (and described as rolling binary options on HyperCore mark prices). Note that these are fully-collateralized since they are co-located with the HyperCore assets and function as hedging tools in their early iterations.</div>
+      </div>
+    </div>
+
+    <!-- Innovation 2 -->
+    <div class="innovation-item" onclick="this.classList.toggle('open')">
+      <div class="innovation-header">
+        <span class="innovation-num">2</span>
+        <span class="innovation-name">Standardization and contract-spec rigor</span>
+        <span class="innovation-toggle">+</span>
+      </div>
+      <div class="innovation-body">
+        <p><strong>What changed:</strong> Pressure is rising to standardize contracts (spec templates, sources, windows, and identity mapping) so distribution wrappers can safely scale and compare markets.</p>
+        <p><strong>Why it matters:</strong> Standardization is the unlock for &ldquo;multi-rail&rdquo; futures: without it, cross-venue routing and best-execution-like experiences remain fragile.</p>
+        <p><strong>Examples:</strong></p>
+        <div class="innovation-example">Nasdaq seeking SEC approval for &ldquo;Outcome-Related Options&rdquo; tied to the Nasdaq-100 (standardized, spec-heavy entry lane).</div>
+        <div class="innovation-example">Cboe exploring/announcing prediction-style products with options-market inspiration (binary and beyond).</div>
+        <div class="innovation-example">Kalshi &ldquo;Market Bug Bounty&rdquo; explicitly incentivizes catching ambiguities and edge cases before listing.</div>
+      </div>
+    </div>
+
+    <!-- Innovation 3 -->
+    <div class="innovation-item" onclick="this.classList.toggle('open')">
+      <div class="innovation-header">
+        <span class="innovation-num">3</span>
+        <span class="innovation-name">Tooling layer: terminals, bots, and cross-venue discovery</span>
+        <span class="innovation-toggle">+</span>
+      </div>
+      <div class="innovation-body">
+        <p><strong>What changed:</strong> A growing &ldquo;professionalization layer&rdquo; is forming around the major rails: analytics terminals, alerts, and cross-venue comparison.</p>
+        <p><strong>Why it matters:</strong> Tooling changes <em>who participates</em> (more active management, more two-way flow), and accelerates market reflexivity.</p>
+        <p><strong>Examples:</strong></p>
+        <div class="innovation-example">Polymarket Builder program: tiered rate limits + &ldquo;RevShare Protocol&rdquo; and enterprise tiers for high-volume integrations.</div>
+        <div class="innovation-example">Polymarket rate limits (Cloudflare throttling, endpoint limits) - shows why enterprise partners pay for reliability.</div>
+        <div class="innovation-example">Oddpool: search + side-by-side comparisons across Kalshi and Polymarket (discovery wrapper).</div>
+        <div class="innovation-example">MarketPinger: &ldquo;paired markets&rdquo; comparison layer across Kalshi and Polymarket.</div>
+        <div class="innovation-example">Flipr: cross-platform trading interface (Polymarket + Kalshi) with pro tooling.</div>
+      </div>
+    </div>
+
+    <!-- Innovation 4 -->
+    <div class="innovation-item" onclick="this.classList.toggle('open')">
+      <div class="innovation-header">
+        <span class="innovation-num">4</span>
+        <span class="innovation-name">Integrity instrumentation as a product</span>
+        <span class="innovation-toggle">+</span>
+      </div>
+      <div class="innovation-body">
+        <p><strong>What changed:</strong> Integrity policing is becoming explicit: regulated rails emphasize audit trails and enforcement; crypto rails are adding monitoring partnerships and ecosystem tooling.</p>
+        <p><strong>Why it matters:</strong> If &ldquo;information-advantaged&rdquo; participation improves accuracy, integrity tooling is what prevents the whole category from being dismissed as rigged.</p>
+        <p><strong>Examples:</strong></p>
+        <div class="innovation-example">CFTC enforcement advisory on prediction markets (misuse of nonpublic information + fraud cases; enforcement expectations).</div>
+        <div class="innovation-example">Reuters commentary on insider-trading fears + Polymarket monitoring partnership references.</div>
+        <div class="innovation-example">Polymarket monitoring sports contracts with Palantir/TWG AI.</div>
+      </div>
+    </div>
+
+    <!-- Innovation 5 -->
+    <div class="innovation-item" onclick="this.classList.toggle('open')">
+      <div class="innovation-header">
+        <span class="innovation-num">5</span>
+        <span class="innovation-name">Niche expansion: new market types and hyper-focused communities</span>
+        <span class="innovation-toggle">+</span>
+      </div>
+      <div class="innovation-body">
+        <p><strong>What changed:</strong> New market designs aim at signal beyond binary &ldquo;will it happen,&rdquo; and niche communities aim to win via culture and distribution, not global liquidity.</p>
+        <p><strong>Why it matters:</strong> These niches don&rsquo;t need to beat incumbents on total volume - they need to own a distribution surface (Discord, mobile, creator channels) and a tight user cohort.</p>
+        <p><strong>Examples:</strong></p>
+        <div class="innovation-example">Noise: &ldquo;trading platform for relevance&rdquo; (attention markets), combining data + trading into continuous pricing via perps.</div>
+        <div class="innovation-example">Lightcone: &ldquo;impact markets&rdquo; trade consequences assuming an outcome is guaranteed. Let&rsquo;s you trade markets like &ldquo;long BTC only if the Fed cuts interest rates.&rdquo;</div>
+        <div class="innovation-example">XO Market: permissionless &ldquo;conviction markets&rdquo; positioning (niche/culture wedge).</div>
+        <div class="innovation-example">New opportunity for fresh ideas to occupy niches. A mobile-first betting market on LoL eSports matches with hyper-custom fantasy sports aspects? An in-app prediction market for TikTok fashion trends? A live wagering market only available to attendants at MMA events via in-seat tablets?</div>
+      </div>
+    </div>
+
+    <p>The clean way to read this wave of innovation is as constraint-hunting: teams are trying to unlock liquidity formation (often via distribution and market-making mechanics), harden trust under stress (settlement integrity and reputational resilience), or expand what users can express with one trade.</p>
+
+    <p>A few innovations (especially probability-as-data) are less about changing execution and more about packaging the market&rsquo;s output for distribution, but they still tie back to the same constraints by shaping where attention and legitimacy accrue. Once you map these moves onto rails and wrappers, the category starts looking like a stack that stratifies <em>by cohort</em> and <em>by distribution surface</em>. We&rsquo;ll close by stating a base case and a bull case, and where we could see it all breaking down.</p>
+  </section>
+
+  <!-- ====== SECTION: Outlook ====== -->
+  <section id="outlook">
+    <span class="section-label">Section 07</span>
+    <h2>Our short-term outlook on prediction markets</h2>
+
+    <p>No &ldquo;state of&rdquo; report would be complete without a healthy dose of peering into our crystal ball. Here&rsquo;s the no-nonsense base, bull, and bear checklist items we&rsquo;re watching for.</p>
+
+    <!-- Base Case -->
+    <div class="scenario-card base">
+      <div class="scenario-label">Our base case for prediction markets</div>
+      <p>If we look out 12-24 months, here&rsquo;s what we see coming:</p>
+      <ol>
+        <li>Cadence Markets (namely Kalshi, through their sports + combos) scale fastest through distribution wrappers, with regulated rails continuing to win broker integrations.</li>
+        <li>Polymarket continues to dominate Narrative Markets, especially where speed-to-list and breadth matter.</li>
+        <li>Hedging Markets start gaining traction, becoming the acceptable entry land for TradFi incumbents because standardized specs are the easiest to approve and distribute. Watch for Nasdaq/Cboe experimentation this year.</li>
+        <li>Even beyond Hedging Markets, we&rsquo;re watching for a big structural push towards more market standardization wherever possible. As brokers distribute across rails, they will demand comparable contracts and clearer specs. We could see some movement on this from Polymarket post-token announcement.</li>
+      </ol>
+      <p>Overall, this is a push towards maturity and role definition. People will understand that you go to Kalshi for the best sports markets, Polymarket for the highest signal &amp; narrative markets, and Hedging Markets to hedge out hyper-specific risks in your portfolio.</p>
+    </div>
+
+    <!-- Bull Case -->
+    <div class="scenario-card bull">
+      <div class="scenario-label">The bull case for prediction markets</div>
+      <p>If we put our bull hats on (we never took them off), we see a blossoming sector forming over the next couple of years.</p>
+      <ol>
+        <li>Liquidity expands beyond headline markets, where breadth deepens (not just volume), and market maker participation remains durable even near resolution.</li>
+      </ol>
+
+      <!-- Chart: Displacement over time -->
+      <div class="chart-container wide fade-in" style="margin:20px 0">
+        <div class="chart-header">
+          <div class="chart-title">The Execution Cliff: Displacement by Market Decile (Q4 2024 vs 2025)</div>
+          <div class="chart-toggle">
+            <button class="chart-btn active" data-chart="decileChart2" data-view="all">All</button>
+            <button class="chart-btn" data-chart="decileChart2" data-view="kalshi_yoy">Kalshi YoY</button>
+            <button class="chart-btn" data-chart="decileChart2" data-view="poly_yoy">Poly YoY</button>
+            <button class="chart-btn" data-chart="decileChart2" data-view="2024_platform">2024</button>
+            <button class="chart-btn" data-chart="decileChart2" data-view="2025_platform">2025</button>
+          </div>
+        </div>
+        <div class="chart-wrapper"><canvas id="decileChart2" height="300"></canvas></div>
+        <div class="chart-caption">Measuring the change in execution/displacement over time and between Polymarket and Kalshi for markets, segmented by volume decile. The top markets by volume are shown on the left, with the smallest volume markets all the way to the right.</div>
+      </div>
+
+      <ol start="2">
+        <li>&ldquo;Probability-as-data&rdquo; becomes a meaningful parallel business line, allowing the dominant player(s) to monetize even when users don&rsquo;t trade.</li>
+        <li>Disputes remain rare relative to market count, with dispute rates falling as scale increases  - necessary for trust.</li>
+      </ol>
+    </div>
+
+    <!-- Chart: Dispute Rate vs Volume -->
+    <div class="chart-container wide fade-in">
+      <div class="chart-header">
+        <div class="chart-title">Trust at Scale: Dispute Rate vs Volume</div>
+      </div>
+      <div class="chart-wrapper"><canvas id="disputeRateChart" height="280"></canvas></div>
+    </div>
+
+    <!-- Bear Case -->
+    <div class="scenario-card bear">
+      <div class="scenario-label">The bear case for prediction markets</div>
+      <p>As always, we have to ask  - &ldquo;but what if we&rsquo;re wrong? What would that look like?&rdquo;</p>
+      <p>Not sure if you&rsquo;ve noticed, but not everyone is as excited about prediction markets as we are. So here&rsquo;s what the bear case would look like:</p>
+      <ol>
+        <li>Category-level backlash concentrates around integrity and &ldquo;information hazard&rdquo; markets (e.g. war, assassination, death), and platforms are forced into a narrow scope &amp; liquidity collapses into a small set of &ldquo;safe&rdquo; markets.</li>
+        <li>Concerns over insider trading push platforms to over-regulate, investigate not just insider trading but traders with legitimate edge (&ldquo;sharps&rdquo;), scaring away the user base most likely to nudge markets towards reality and provide meaningful signal.</li>
+        <li>Long-tail economics worsen: the power law tightens (volume concentrates to just a few markets), and mid- and long-tail markets become effectively untradeable.</li>
+        <li>Without chronic market maker support, what we see with near-cycle resolution only worsens, with traders unable to exit close to market expiration.</li>
+      </ol>
+    </div>
+
+    <p>We&rsquo;re past the point of wondering <em>if</em> prediction markets will meaningfully penetrate the global zeitgeist. Whether you consume the majority of your content through Twitter, YouTube, or mainstream media, this infrastructure has found its way into the conversation.</p>
+
+    <p>The question now shifts from &ldquo;does this have legs?&rdquo; into &ldquo;who will capture meaningful market share?&rdquo;</p>
+
+    <p>Our argument has been that the key to sussing out the victors will come down to:</p>
+    <ul>
+      <li>Who can win the rails for each market archetype and</li>
+      <li>Who can wrap their product to best hunt the constraints of: liquidity formation, trust, or expressiveness</li>
+    </ul>
+
+    <p>The end-state will not be a single winner, more likely it will look like a stratified stack across Narrative Markets, Cadence Markets, and Hedging Markets, each bundled differently across rails and wrappers.</p>
+
+    <h3>In closing</h3>
+
+    <p>The data suggests the category has crossed the threshold into infrastructure - but it&rsquo;s still asymmetrical: execution quality and market breadth don&rsquo;t scale evenly across rails.</p>
+
+    <p>That&rsquo;s why this is a stack war: rails compete on settlement credibility and depth, while wrappers compete on distribution, retention, and packaging. Narrative Markets, Cadence Markets, and Hedging Markets are simply different equilibrium bundles of those layers, optimized for different user intents. The durable advantage goes to whoever can standardize enough to scale distribution without losing the permissionless edge that keeps markets culturally relevant.</p>
+
+    <p>Where does each player stand today? Here&rsquo;s how we see it:</p>
+
+    <!-- Stoplight Scorecard -->
+    <div class="chart-container wide fade-in" style="padding:24px 28px">
+      <div class="chart-title" style="margin-bottom:4px">The Prediction Market Scorecard</div>
+      <p class="chart-desc">A snapshot of competitive positioning across the key dimensions that matter. Hover over any cell for rationale. <span style="font-size:0.8em">&#x1f7e9; = strong today &nbsp; &#x1f7e8; = mixed / developing &nbsp; &#x1f7e5; = weak / not live &nbsp; &#x2b1c; = N/A</span></p>
+      <div class="table-wrap" style="margin-top:16px">
+        <table class="data-table scorecard-table">
+          <thead>
+            <tr>
+              <th>Player</th>
+              <th>Liquidity (Top)</th>
+              <th>Liquidity (Breadth)</th>
+              <th>Distribution Power</th>
+              <th>Settlement Credibility</th>
+              <th>Data / Prob. Brand</th>
+              <th>Institutional Readiness</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="project-tag poly" style="font-size:0.82rem">Polymarket</span></td>
+              <td><span class="sc-cell sc-green" title="Deepest top-of-book liquidity in the sector, especially for headline markets">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-green" title="Thousands of markets with meaningful volume; permissionless listing drives breadth">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Growing via ICE data deal + Dow Jones embeds, but no native broker/app distribution yet">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-yellow" title="UMA optimistic oracle works but is novel; disputes are rare but untested at true institutional scale">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="Dow Jones modules across WSJ/Barron's/MarketWatch; ICE as global data distributor; de facto 'reference surface'">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Crypto-native rails limit access for regulated institutions; no CFTC oversight">&#x1f7e8;</span></td>
+            </tr>
+            <tr>
+              <td><span class="project-tag kalshi" style="font-size:0.82rem">Kalshi</span></td>
+              <td><span class="sc-cell sc-green" title="Strong top-of-book depth, especially in sports and S&P/Nasdaq markets">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Growing market count but still trailing Polymarket on long-tail breadth">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="Coinbase, Robinhood, and Interactive Brokers all launched with Kalshi as the underlying rail">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-green" title="CFTC-regulated DCM; settlement enforceability enables broker distribution and institutional trust">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="CNBC partnership for data/tickers, but not yet the 'reference surface' for probability data">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="CFTC-regulated; broker integrations live; Tradeweb partnership for institutional portal">&#x1f7e9;</span></td>
+            </tr>
+            <tr>
+              <td><span class="project-tag neutral" style="font-size:0.82rem">CME</span></td>
+              <td><span class="sc-cell sc-yellow" title="Incumbent derivatives liquidity, but prediction-specific markets are still early">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Limited prediction-style product range so far">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Distribution being built through consumer wrappers like FanDuel Predicts">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="Incumbent clearinghouse; gold-standard settlement infrastructure">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Strong data brand in derivatives, but not yet in prediction/event markets">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="Existing institutional client base; clearing/margin infrastructure ready">&#x1f7e9;</span></td>
+            </tr>
+            <tr>
+              <td><span class="project-tag neutral" style="font-size:0.82rem">Nasdaq</span></td>
+              <td><span class="sc-cell sc-red" title="Prediction-style binary options not yet live at scale (SEC filing stage)">&#x1f7e5;</span></td>
+              <td><span class="sc-cell sc-red" title="No live prediction markets yet">&#x1f7e5;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Massive existing distribution network, but untested for prediction products">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="SEC-regulated exchange; existing options/clearing infrastructure">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Strong brand in equities/options data, but no prediction market data presence yet">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="Institutional infrastructure already in place; regulatory relationships established">&#x1f7e9;</span></td>
+            </tr>
+            <tr>
+              <td><span class="project-tag neutral" style="font-size:0.82rem">Cboe</span></td>
+              <td><span class="sc-cell sc-red" title="Prediction markets framework introduced but no live scale products yet">&#x1f7e5;</span></td>
+              <td><span class="sc-cell sc-red" title="No live prediction markets yet">&#x1f7e5;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Strong options distribution infrastructure, untested for prediction products">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="SEC-regulated; existing options clearing and settlement">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="VIX brand is strong, but no prediction-specific data brand yet">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="Institutional infrastructure ready; options market maker relationships">&#x1f7e9;</span></td>
+            </tr>
+            <tr>
+              <td><span class="project-tag neutral" style="font-size:0.82rem">Coinbase</span> <span style="font-size:0.68rem;color:rgba(237,230,221,0.35)">(wrapper)</span></td>
+              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#x2b1c;</span></td>
+              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#x2b1c;</span></td>
+              <td><span class="sc-cell sc-green" title="110M+ verified users; prediction markets embedded in existing super-app">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-green" title="Regulated entity; routes through CFTC-regulated Kalshi rail">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Strong crypto brand, but not yet known for probability/event data">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Institutional arm exists (Coinbase Prime), but prediction market integration is retail-first">&#x1f7e8;</span></td>
+            </tr>
+            <tr>
+              <td><span class="project-tag neutral" style="font-size:0.82rem">Robinhood</span> <span style="font-size:0.68rem;color:rgba(237,230,221,0.35)">(wrapper)</span></td>
+              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#x2b1c;</span></td>
+              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#x2b1c;</span></td>
+              <td><span class="sc-cell sc-green" title="24M+ funded accounts; prediction markets hub integrated in app">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-green" title="SEC/FINRA-regulated broker; initially routed through KalshiEX">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Growing retail brand, but limited data/probability surface play">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Retail-focused platform; institutional capabilities exist but secondary">&#x1f7e8;</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:0.68rem;color:rgba(237,230,221,0.25);margin-top:8px">Nasdaq and Cboe liquidity is &#x1f7e5; because their prediction-style products are not live at scale today, even though their settlement/institutional infrastructure is strong. Coinbase and Robinhood liquidity is N/A because they are wrappers - their score reflects distribution and permissioning posture, not where the order book sits.</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- Footer -->
+<footer class="report-footer">
+  <div class="footer-brand">blocmates<span class="dot">.</span></div>
+  <div class="footer-sub">The State of Prediction Markets  - Interactive Research Report  - March 2026</div>
+</footer>
+
+</div><!-- /reportView -->
+
+<!-- ====== DASHBOARD VIEW ====== -->
+<div id="dashboardView" class="hidden">
+<div class="dashboard">
+
+  <!-- S1 — Market Size -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">S1 — Market Size <span>5 charts</span></h2>
+    <p class="dash-section-desc">The sector has gone from a crypto curiosity to a multi-billion-dollar weekly market. But how much of that volume is real economic activity, and how much is leveraged speculation? Who&rsquo;s gaining share  - and is the dominance picture shifting? Start here to understand the raw scale of what&rsquo;s being traded.</p>
+    <div class="dash-grid">
+      <div class="dash-card"><div class="chart-title">Weekly Volume (USD Spent)</div><div class="chart-wrapper"><canvas id="db-volumeChart"></canvas></div></div>
+      <div class="dash-card"><div class="chart-title">Volume Market Share (%)</div><div class="chart-wrapper"><canvas id="db-volumeShareChart"></canvas></div></div>
+      <div class="dash-card"><div class="chart-title">Weekly Notional Volume ($1/Contract)</div><div class="chart-wrapper"><canvas id="db-notionalChart"></canvas></div></div>
+      <div class="dash-card"><div class="chart-title">Notional Volume Market Share (%)</div><div class="chart-wrapper"><canvas id="db-notionalShareChart"></canvas></div></div>
+      <div class="dash-card full-width"><div class="chart-title">Volume/Notional Ratio (Speculation Signal)</div><div class="chart-wrapper"><canvas id="db-specRatioChart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- S2 — Sector Breakdown -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">S2 — Sector Breakdown <span>2 charts</span></h2>
+    <p class="dash-section-desc">Kalshi&rsquo;s sports launch changed the product mix overnight. Is sports cannibalizing the core events business, or is it additive growth? Watch the share chart  - the answer has implications for whether Kalshi is building a diversified exchange or a sportsbook in a CFTC wrapper.</p>
+    <div class="dash-grid">
+      <div class="dash-card full-width"><div class="chart-title">Kalshi Sports vs Non-Sports Volume</div><div class="chart-wrapper"><canvas id="db-kalshiSportsChart"></canvas></div></div>
+      <div class="dash-card full-width"><div class="chart-title">Kalshi Sports vs Non-Sports Share (%)</div><div class="chart-wrapper"><canvas id="db-kalshiSportsDomChart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- S3 — Revenue -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">S3 — Revenue <span>3 charts</span></h2>
+    <p class="dash-section-desc">Volume alone doesn&rsquo;t tell you whether a platform is capital-efficient. How many dollars of volume does each dollar of locked liquidity generate? And which individual markets are driving the numbers? Dig into the capital efficiency trend and the 30-day leaderboard to see where the action concentrates.</p>
+    <div class="dash-grid">
+      <div class="dash-card full-width"><div class="chart-title">Binary vs Multi-Outcome Volume</div><p class="chart-desc">Polymarket supports multi-outcome markets (e.g. &ldquo;Who will win?&rdquo; with 5+ candidates). How much volume flows to simple yes/no contracts vs richer multi-leg structures?</p><div class="chart-wrapper"><canvas id="db-binaryMultiChart"></canvas></div></div>
+      <div class="dash-card full-width"><div class="chart-title">Capital Efficiency (Volume per $ TVL)</div><p class="chart-desc">How many dollars of trading volume does each dollar of locked liquidity generate? Higher = more efficient capital deployment. The line tracks the ratio; bars show average TVL.</p><div class="chart-wrapper"><canvas id="db-capEffChart"></canvas></div></div>
+      <div class="dash-card full-width"><div class="chart-title">Top Markets by Volume (30d)</div><div class="chart-wrapper" style="height:500px"><canvas id="db-topMarketsChart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- S4 — Trust -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">S4 — Trust <span>3 charts + table</span></h2>
+    <p class="dash-section-desc">Polymarket&rsquo;s settlement layer runs on UMA&rsquo;s optimistic oracle  - a system where anyone can dispute a market resolution by staking tokens. As volume and market count explode, are disputes keeping pace or falling behind? If disputes per million dollars of volume is declining, it suggests the trust infrastructure is scaling. If not, it&rsquo;s a ticking time bomb.</p>
+    <div class="dash-grid">
+      <div class="dash-card full-width"><div class="chart-title">UMA Disputes — Raw Data</div><div id="db-disputeTable" class="dash-table-wrapper" style="max-height:300px;overflow-y:auto"></div></div>
+      <div class="dash-card"><div class="chart-title">UMA Disputes Over Time</div><div class="chart-wrapper"><canvas id="db-disputeChart"></canvas></div></div>
+      <div class="dash-card"><div class="chart-title">Dispute Rate vs Volume</div><div class="chart-wrapper"><canvas id="db-disputeRateChart"></canvas></div></div>
+      <div class="dash-card full-width"><div class="chart-title">Dispute Rate vs # of Markets</div><div class="chart-wrapper"><canvas id="db-disputeMarketsChart"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- S5 — Users -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">S5 — Users <span>4 charts</span></h2>
+    <p class="dash-section-desc">Growth in volume means nothing if it&rsquo;s the same 50 wallets recycling capital. Are prediction markets actually onboarding new users, or is the growth story just whale concentration by another name? Track the new-vs-returning split, watch the average trade size for signs of retail adoption, and check how much volume the top 10% of wallets control.</p>
+    <div class="dash-grid">
+      <div class="dash-card full-width"><div class="chart-title">Unique Traders Over Time (Weekly)</div><div class="chart-wrapper"><canvas id="db-uniqueTradersChart"></canvas></div></div>
+      <div class="dash-card full-width"><div class="chart-title">Polymarket: New vs Returning Traders (Weekly)</div><p class="chart-desc">Polymarket only  - Kalshi does not publish wallet-level data onchain.</p><div class="chart-wrapper"><canvas id="db-tradersChart"></canvas></div></div>
+      <div class="dash-card"><div class="chart-title">Average Trade Size (Weekly)</div><div class="chart-wrapper"><canvas id="db-tradeSizeChart"></canvas></div></div>
+      <div class="dash-card"><div class="chart-title">Trader Concentration (Whale Dominance)</div><div class="chart-wrapper"><canvas id="db-whaleChart"></canvas></div><div class="chart-caption">Tracks the share of volume traded on Polymarket by the top 10, 50, 100 top traders.</div></div>
+    </div>
+  </div>
+
+  <!-- S6 — Execution Quality -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">S6 — Historical Execution &amp; Calibration Analysis <span>22 charts</span></h2>
+    <div class="dash-explainer">
+      <p><strong>Dataset:</strong> <a href="https://github.com/Jon-Becker/prediction-market-analysis" target="_blank">Jon Becker&rsquo;s open prediction market dataset</a> covering 476 million trades across Kalshi (Jun 2021 to Nov 2025) and Polymarket (Mar 2023 to Nov 2025). 53 GB of raw Parquet data processed offline via DuckDB. Note that &ldquo;2025 Q4&rdquo; data <em>does not</em> include December values.</p>
+      <p>Sections 1 through 5 track what&rsquo;s happening on prediction markets right now: volume, liquidity, revenue, disputes, users. But they can&rsquo;t answer the harder question: <strong>are these markets actually good?</strong></p>
+      <p>&ldquo;Good&rdquo; means three things:</p>
+      <ul>
+        <li>First, <strong>accurate</strong>: when a contract trades at 70&cent;, the outcome should happen roughly 70% of the time.</li>
+        <li>Second, <strong>cheap to trade</strong>: the hidden cost of crossing the spread shouldn&rsquo;t eat your edge.</li>
+        <li>Third, <strong>consistently deep</strong>: execution quality shouldn&rsquo;t collapse the moment you step outside the top 10 markets.</li>
+      </ul>
+    </div>
+
+    <div class="dash-subsection-title">Calibration</div>
+    <p class="dash-section-desc">If a contract trades at 70&cent;, does the outcome actually happen 70% of the time? These charts test whether prediction market prices are honest probability estimates  - and where they break down.</p>
+    <div class="dash-grid">
+      <div class="dash-card full-width"><div class="chart-title">Institutional-Grade Markets ($10K Within 1&cent;)</div><p class="chart-desc">Number of markets where a $10K trade moves the price by less than 1 cent  - a proxy for institutional-grade depth.</p><div class="chart-wrapper"><canvas id="db-institutionalChart"></canvas></div><div class="chart-caption">How many markets can absorb a $10K trade without moving the price (by at most 1&cent;)?</div></div>
+      <div class="dash-card"><div class="chart-title">Calibration Curve</div><p class="chart-desc">Implied probability vs actual win rate. Perfect calibration = the diagonal.</p><div class="chart-wrapper"><canvas id="db-calibrationChart"></canvas></div><div class="chart-caption">Are prediction market prices actually reliable probability estimates?</div></div>
+      <div class="dash-card"><div class="chart-title">Calibration Error by Time Horizon</div><p class="chart-desc">Average calibration error segmented by time remaining until resolution.</p><div class="chart-wrapper"><canvas id="db-calHorizonChart"></canvas></div><div class="chart-caption">Does calibration degrade gradually  - or does it fall off a cliff?</div></div>
+      <div class="dash-card full-width"><div class="chart-title">Calibration Error by Bucket</div><p class="chart-desc">Absolute error between implied probability and actual outcome frequency, grouped by probability range.</p><div class="chart-wrapper"><canvas id="db-calErrorBucketChart"></canvas></div><div class="chart-caption">Where do prediction markets misprice the most  - longshots or favorites?</div></div>
+      <div class="dash-card full-width"><div class="chart-header"><div class="chart-title">Calibration at Extremes (1d vs 3+ mo)</div><div class="chart-toggle"><button class="chart-btn active" data-chart="db-calExtremesChart" data-view="all">All</button><button class="chart-btn" data-chart="db-calExtremesChart" data-view="kalshi">Kalshi</button><button class="chart-btn" data-chart="db-calExtremesChart" data-view="poly">Poly</button><button class="chart-btn" data-chart="db-calExtremesChart" data-view="near">&lt;1 Day</button><button class="chart-btn" data-chart="db-calExtremesChart" data-view="far">3+ Months</button></div></div><p class="chart-desc">Comparing calibration for contracts settling within 24 hours vs those 3+ months out. Near-resolution should be more accurate.</p><div class="chart-wrapper" style="height:500px"><canvas id="db-calExtremesChart"></canvas></div><div class="chart-caption">How much do you trust a prediction market price 3 months before resolution?</div></div>
+    </div>
+
+    <div class="dash-subsection-title">Bounce &amp; Displacement</div>
+    <p class="dash-section-desc">Accuracy is one thing  - but can you actually trade on it? These charts measure the hidden cost of crossing the spread and how much your trade moves the market against you.</p>
+    <div class="dash-explainer" style="font-size:0.8rem">
+      <p><strong>Bounce (Spread Proxy)</strong>  - a useful proxy for bid-ask spread is the absolute price change between consecutive opposite-signed trades in the same market. If Trade N is buyer-initiated and Trade N+1 is seller-initiated, then the bounce approximates the spread captured by bid-ask bounce.</p>
+      <p class="dash-equation">Bounce = |P<sub>N+1</sub> &minus; P<sub>N</sub>|&ensp; <span style="opacity:0.5">where Trade N and Trade N+1 are opposite-signed</span></p>
+      <p>Same-direction pairs are often excluded because they are more likely to reflect directional price discovery rather than alternation between bid and ask. The size-filtered bounce (retail/institutional) adds a second filter: both Trade N and Trade N+1 must fall within the size range ($10&ndash;$100 for retail, $1K&ndash;$10K for institutional). This isolates the spread experience for each trader type.</p>
+      <p style="margin-top:14px"><strong>Price Displacement</strong>  - a simple proxy for how much a trade moves the market is the absolute price change between a trade and the immediately following trade in the same market, filtered to trades above a given size threshold.</p>
+      <p class="dash-equation">Displacement = |P<sub>N+1</sub> &minus; P<sub>N</sub>|</p>
+      <p>Unlike formal price impact measures (which use signed returns relative to a midquote at a fixed time horizon and decompose into temporary and permanent components) this is an unsigned, next-trade-based displacement that captures &ldquo;how far did the price move right after a large trade?&rdquo; It overstates true impact when prices are noisy and understates it when impact takes multiple trades to materialize, but it provides a consistent, order-book-free comparison across platforms and time periods.</p>
+    </div>
+    <div class="dash-grid">
+      <div class="dash-card full-width"><div class="chart-title">Bounce Over Time (Quarterly)</div><div class="chart-wrapper"><canvas id="db-bounceChart"></canvas></div><div class="chart-caption">What does it actually cost to trade (and is the gap closing)?</div></div>
+      <div class="dash-card"><div class="chart-title">Retail Bounce ($10–$100)</div><div class="chart-wrapper"><canvas id="db-retailBounceChart"></canvas></div><div class="chart-caption">Are retail traders getting better fills than they were two years ago?</div></div>
+      <div class="dash-card"><div class="chart-title">Institutional Bounce ($1K–$10K)</div><div class="chart-wrapper"><canvas id="db-instBounceChart"></canvas></div><div class="chart-caption">Can institutional-sized orders execute without getting picked off?</div></div>
+      <div class="dash-card full-width"><div class="chart-title">Price Displacement by Trade Size</div><div class="chart-wrapper"><canvas id="db-displacementChart"></canvas></div><div class="chart-caption">How much does your trade size move the market against you?</div></div>
+      <div class="dash-card"><div class="chart-title">Retail Displacement Over Time ($10–$100)</div><div class="chart-wrapper"><canvas id="db-retailDispChart"></canvas></div><div class="chart-caption">Is the market getting deeper for everyday traders?</div></div>
+      <div class="dash-card"><div class="chart-title">Institutional Displacement Over Time ($1K–$10K)</div><div class="chart-wrapper"><canvas id="db-instDispChart"></canvas></div><div class="chart-caption">How close are Polymarket and Kalshi competing on institutional fills?</div></div>
+    </div>
+
+    <div class="dash-subsection-title">Market Microstructure</div>
+    <p class="dash-section-desc">Execution quality doesn&rsquo;t scale uniformly. The top 10 markets trade like liquid futures  - but what happens when you step outside the headlines? These charts reveal the &ldquo;execution cliff&rdquo; and the long-tail tax.</p>
+    <div class="dash-grid">
+      <div class="dash-card full-width"><div class="chart-header"><div class="chart-title">Displacement by Market Decile</div><div class="chart-toggle"><button class="chart-btn active" data-chart="db-decileChart" data-view="all">All</button><button class="chart-btn" data-chart="db-decileChart" data-view="kalshi_yoy">Kalshi YoY</button><button class="chart-btn" data-chart="db-decileChart" data-view="poly_yoy">Poly YoY</button><button class="chart-btn" data-chart="db-decileChart" data-view="2024_platform">2024</button><button class="chart-btn" data-chart="db-decileChart" data-view="2025_platform">2025</button></div></div><div class="chart-wrapper"><canvas id="db-decileChart"></canvas></div><div class="chart-caption">How fast does execution quality collapse outside the top-volume markets?</div></div>
+      <div class="dash-card full-width"><div class="chart-header"><div class="chart-title">Cohort Displacement: Top 10% vs Bottom 50%</div><div class="chart-toggle"><button class="chart-btn active" data-chart="db-cohortChart" data-view="all">All</button><button class="chart-btn" data-chart="db-cohortChart" data-view="kalshi">Kalshi</button><button class="chart-btn" data-chart="db-cohortChart" data-view="poly">Poly</button><button class="chart-btn" data-chart="db-cohortChart" data-view="top10">Top 10%</button><button class="chart-btn" data-chart="db-cohortChart" data-view="bottom50">Bottom 50%</button></div></div><div class="chart-wrapper"><canvas id="db-cohortChart"></canvas></div><div class="chart-caption">Do bottom-50% markets trade like a different asset class?</div></div>
+      <div class="dash-card"><div class="chart-title">Long-Tail Tax Ratio</div><div class="chart-wrapper"><canvas id="db-longTailChart"></canvas></div><div class="chart-caption">The ratio between displacement in bottom 50% markets to top 10% markets.</div></div>
+      <div class="dash-card"><div class="chart-title">Intraday Spread Patterns (24h)</div><div class="chart-wrapper"><canvas id="db-intradayChart"></canvas></div><div class="chart-caption">Is there an optimal time of day to trade prediction markets?</div></div>
+      <div class="dash-card full-width"><div class="chart-title">Market Breadth ($1K Threshold)</div><div class="chart-wrapper"><canvas id="db-breadthChart"></canvas></div><div class="chart-caption">Measuring how many markets had multiple >$1K trades (3+).</div></div>
+    </div>
+
+    <div class="dash-subsection-title">Taker Flow &amp; Concentration</div>
+    <p class="dash-section-desc">Who&rsquo;s on each side of the trade, and is the market a one-event show? These charts track taker behavior, directional bias, profitability by side, and whether volume is diversifying or concentrating.</p>
+    <p style="font-size:0.72rem;color:rgba(237,230,221,0.3);margin:-6px 0 10px">&#9888; Taker behavior data was largely collected before Polymarket&rsquo;s fee rollout (March 30, 2026). Fee introduction may shift these patterns.</p>
+    <div class="dash-grid">
+      <div class="dash-card"><div class="chart-title">Kalshi Taker YES/NO Ratio</div><div class="chart-wrapper"><canvas id="db-kalshiTakerChart"></canvas></div><div class="chart-caption">Are Kalshi traders increasingly betting on "Yes" outcomes?</div></div>
+      <div class="dash-card"><div class="chart-title">Polymarket Taker Buy/Sell Ratio</div><div class="chart-wrapper"><canvas id="db-polyBSRatioChart"></canvas></div><div class="chart-caption">Do Polymarket participants slam the BUY or SELL button more often?</div></div>
+      <div class="dash-card"><div class="chart-title">Kalshi Taker PnL — YES vs NO</div><div class="chart-wrapper"><canvas id="db-kalshiPnLChart"></canvas></div><div class="chart-caption">Which side of Kalshi trades has been profitable — Yes or No?</div></div>
+      <div class="dash-card"><div class="chart-title">Polymarket Taker Volume</div><div class="chart-wrapper"><canvas id="db-polyTakerChart"></canvas></div><div class="chart-caption">How much of Polymarket's volume is selling vs buying?</div></div>
+      <div class="dash-card"><div class="chart-title">Volume Concentration Power Law</div><div class="chart-wrapper"><canvas id="db-concentrationChart"></canvas></div><div class="chart-caption">What share of volume do the top 0.1% of markets capture?</div></div>
+      <div class="dash-card"><div class="chart-title">HHI Concentration Over Time</div><p class="chart-desc">The Herfindahl-Hirschman Index measures market concentration. HHI &gt; 2,500 = highly concentrated; &lt; 100 = diversified. Lower is healthier.</p><div class="chart-wrapper"><canvas id="db-hhiChart"></canvas></div><div class="chart-caption">Are prediction markets diversifying beyond the headline events?</div></div>
+    </div>
+  </div>
+
+  <!-- S7 — Time-to-Resolution -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">S7 — Time-to-Resolution <span>2 charts</span></h2>
+    <p class="dash-section-desc">Conventional wisdom says near-resolution markets should be the most liquid  - the outcome is almost known. But the data tells a different story. Watch what happens to spreads and price impact as contracts enter their final hours. If you&rsquo;re trading late-stage markets, you&rsquo;re paying more than you think.</p>
+    <div class="dash-grid">
+      <div class="dash-card"><div class="chart-title">Spread Widening Near Resolution</div><div class="chart-wrapper"><canvas id="db-settlementSpreadChart"></canvas></div><div class="chart-caption">Does liquidity dry up as contracts approach settlement? Tracks spread at 30+d, 7-30d, 1-7d, &lt;1d before resolution.</div></div>
+      <div class="dash-card"><div class="chart-title">Price Impact Near Resolution</div><div class="chart-wrapper"><canvas id="db-settlementImpactChart"></canvas></div><div class="chart-caption">Does liquidity dry up as contracts approach settlement? Tracks price impact at 30+d, 7-30d, 1-7d, &lt;1d before resolution.</div></div>
+    </div>
+    <div class="dash-explainer" style="font-size:0.78rem; margin-top:16px; opacity:0.55">
+      <p><strong>Caveat:</strong> Rising spreads and impact near resolution don&rsquo;t necessarily mean real liquidity is leaving. As a contract approaches settlement, remaining trades skew larger and more directional  - the casual flow has already exited, leaving only informed traders willing to pay up. The dataset also captures a &ldquo;last-trade&rdquo; effect: the final trade in a market often has no subsequent trade to measure against, biasing displacement upward. These confounding factors mean the charts above should be read as &ldquo;execution quality degrades near settlement&rdquo; rather than &ldquo;market makers are pulling quotes.&rdquo;</p>
+    </div>
+  </div>
+
+  <footer class="report-footer">
+    <div class="footer-brand">blocmates<span class="dot">.</span></div>
+    <div class="footer-sub">Data Dashboard  - The State of Prediction Markets  - March 2026</div>
+  </footer>
+
+</div><!-- /dashboard -->
+</div><!-- /dashboardView -->
+
+<!-- ==================== TINKERING VIEW ==================== -->
+
+
+<!-- Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<!-- App -->
+<script src="js/app.js?v=70"></script>
+</body>
+</html>

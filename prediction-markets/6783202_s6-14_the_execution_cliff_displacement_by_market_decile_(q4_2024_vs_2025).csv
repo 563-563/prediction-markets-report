@@ -1,0 +1,41 @@
+series,decile,decile_order,median_1k_impact_cents
+kalshi Q4 2024,Top 10%,1,1.23
+kalshi Q4 2025,Top 10%,1,0.42
+polymarket Q4 2024,Top 10%,1,0.52
+polymarket Q4 2025,Top 10%,1,0.5
+kalshi Q4 2024,80-90%,2,1.8
+kalshi Q4 2025,80-90%,2,0.77
+polymarket Q4 2024,80-90%,2,0.81
+polymarket Q4 2025,80-90%,2,0.67
+kalshi Q4 2024,70-80%,3,1.83
+kalshi Q4 2025,70-80%,3,0.96
+polymarket Q4 2024,70-80%,3,1
+polymarket Q4 2025,70-80%,3,0.65
+kalshi Q4 2024,60-70%,4,1.89
+kalshi Q4 2025,60-70%,4,1.15
+polymarket Q4 2024,60-70%,4,1.11
+polymarket Q4 2025,60-70%,4,0.6
+kalshi Q4 2024,50-60%,5,1.89
+kalshi Q4 2025,50-60%,5,1.4
+polymarket Q4 2024,50-60%,5,1.12
+polymarket Q4 2025,50-60%,5,0.44
+kalshi Q4 2024,40-50%,6,2.15
+kalshi Q4 2025,40-50%,6,1.4
+polymarket Q4 2024,40-50%,6,1.15
+polymarket Q4 2025,40-50%,6,0.38
+kalshi Q4 2024,30-40%,7,2.22
+kalshi Q4 2025,30-40%,7,1.67
+polymarket Q4 2024,30-40%,7,1.25
+polymarket Q4 2025,30-40%,7,0.38
+kalshi Q4 2024,20-30%,8,1.94
+kalshi Q4 2025,20-30%,8,1.75
+polymarket Q4 2024,20-30%,8,1.41
+polymarket Q4 2025,20-30%,8,0.5
+kalshi Q4 2024,10-20%,9,2.67
+kalshi Q4 2025,10-20%,9,2.2
+polymarket Q4 2024,10-20%,9,1.33
+polymarket Q4 2025,10-20%,9,0.52
+kalshi Q4 2024,Bottom 10%,10,2.67
+kalshi Q4 2025,Bottom 10%,10,3
+polymarket Q4 2024,Bottom 10%,10,1.4
+polymarket Q4 2025,Bottom 10%,10,0.67
