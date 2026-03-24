@@ -3007,21 +3007,22 @@ function buildRptFeeChart() {
     { label: 'Geopolitical (free)', cat: 'geopolitical', color: '#ef4444', width: 1.5 },
   ];
 
+  // Default to dollar view
   const datasets = [];
   catGroups.forEach(g => {
     datasets.push({
-      label: g.label, data: probs.map(p => +(polyEffRate(p, g.cat)).toFixed(4)),
+      label: g.label, data: probs.map(p => +(polyDollarFee(p, g.cat, 100)).toFixed(4)),
       borderColor: g.color, backgroundColor: 'transparent', borderWidth: g.width,
       borderDash: [], pointRadius: 0, pointHoverRadius: 3,
     });
   });
   datasets.push({
-    label: 'Kalshi (Standard)', data: probs.map(p => +(kalshiEffRate(p, 'standard')).toFixed(4)),
+    label: 'Kalshi (Standard)', data: probs.map(p => +(kalshiDollarFee(p, 'standard', 100)).toFixed(4)),
     borderColor: BM.kalshi, backgroundColor: 'transparent', borderWidth: 3,
     borderDash: [8, 4], pointRadius: 0, pointHoverRadius: 3,
   });
   datasets.push({
-    label: 'Kalshi (S&P/Nasdaq)', data: probs.map(p => +(kalshiEffRate(p, 'index')).toFixed(4)),
+    label: 'Kalshi (S&P/Nasdaq)', data: probs.map(p => +(kalshiDollarFee(p, 'index', 100)).toFixed(4)),
     borderColor: 'rgba(0,222,149,0.5)', backgroundColor: 'transparent', borderWidth: 2,
     borderDash: [4, 4], pointRadius: 0, pointHoverRadius: 3,
   });
@@ -3037,7 +3038,7 @@ function buildRptFeeChart() {
         tooltip: {
           callbacks: {
             title: (ctx) => `Share price: ${ctx[0].label}`,
-            label: (ctx) => `${ctx.dataset.label}: ${ctx.raw.toFixed(3)}%`,
+            label: (ctx) => `${ctx.dataset.label}: $${ctx.raw.toFixed(2)}`,
           },
         },
       },
@@ -3055,8 +3056,8 @@ function buildRptFeeChart() {
         },
         y: {
           min: 0,
-          title: { display: true, text: 'Effective Fee Rate (%)', color: BM.creamFaded },
-          ticks: { callback: (v) => v.toFixed(1) + '%' },
+          title: { display: true, text: 'Fee for 100 Contracts ($)', color: BM.creamFaded },
+          ticks: { callback: (v) => '$' + v.toFixed(2) },
         },
       },
     },

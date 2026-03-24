@@ -265,7 +265,7 @@
 
     <p>At the beginning of 2025, Kalshi made the decision to push heavily into sports. Part of this is likely just product physics: after the 2024 election cycle, the category&rsquo;s &ldquo;always-on&rdquo; attention moved away from politics, and sports is the highest-frequency substrate available - there&rsquo;s always another match, another slate, another moment to trade.</p>
 
-    <p>This pivot is also the cleanest expression of what we&rsquo;ll call Cadence Markets: a subset of prediction markets optimized for high feedback loops and habitual usage. In Cadence Markets, the product goal isn&rsquo;t &ldquo;the world&rsquo;s most philosophically pure probability estimate&rdquo; - it&rsquo;s getting users to return, wager, and repeat. That changes everything about what you build and what you can monetize.</p>
+    <p>This pivot is also the cleanest expression of what we call Cadence Markets: a subset of prediction markets optimized for high feedback loops and habitual usage. In Cadence Markets, the product goal isn&rsquo;t &ldquo;the world&rsquo;s most philosophically pure probability estimate&rdquo; - it&rsquo;s getting users to return, wager, and repeat. That changes everything about what you build and what you can monetize.</p>
 
     <!-- Chart: Kalshi Sports -->
     <div class="chart-container wide fade-in">
@@ -395,13 +395,13 @@
         </div>
         <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
           <div class="chart-toggle">
-            <button class="chart-btn active" data-chart="rptFeeCompChart" data-view="rate">Effective Rate (%)</button>
-            <button class="chart-btn" data-chart="rptFeeCompChart" data-view="dollar">Fee per 100 ($)</button>
+            <button class="chart-btn" data-chart="rptFeeCompChart" data-view="rate">Effective Rate (%)</button>
+            <button class="chart-btn active" data-chart="rptFeeCompChart" data-view="dollar">Fee per 100 ($)</button>
           </div>
         </div>
         <div class="chart-wrapper" style="height:400px"><canvas id="rptFeeCompChart"></canvas></div>
       </div>
-      <div class="chart-caption" id="rptFeeCaption" style="margin-bottom:20px">Effective fee rate = fee &divide; cost of shares. Polymarket&rsquo;s curves are symmetric; Kalshi&rsquo;s declines linearly because its formula taxes potential payout, not share price. Sources: <a href="https://docs.polymarket.com/trading/fees" target="_blank">Polymarket docs</a>, <a href="https://help.kalshi.com/trading/fees" target="_blank">Kalshi help center</a>.</div>
+      <div class="chart-caption" id="rptFeeCaption" style="margin-bottom:20px">Fee in dollars for 100 contracts. Kalshi's curve is symmetric around 50&cent;; Polymarket's curves skew right (higher-priced contracts cost more). Sources: <a href="https://docs.polymarket.com/trading/fees" target="_blank">Polymarket docs</a>, <a href="https://help.kalshi.com/trading/fees" target="_blank">Kalshi help center</a>.</div>
 
       <div style="border-top:1px solid rgba(237,230,221,0.08);padding-top:20px">
         <div style="font-family:'Poppins',sans-serif;font-weight:700;font-size:0.95rem;color:var(--bm-cream);margin-bottom:12px">Why the curves are shaped differently</div>
@@ -1083,6 +1083,6 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <!-- App -->
-<script src="js/app.js?v=71"></script>
+<script src="js/app.js?v=72"></script>
 </body>
 </html>
