@@ -1953,7 +1953,12 @@ async function dbBuildConcentration() {
     label: p, data: buckets.map(b => { const row = raw.find(r => r.platform === p && r.percentile_bucket === b); return row ? row.pct_of_total : 0; }),
     backgroundColor: platformColor(p) + 'cc', borderRadius: 3,
   }));
-  dbChart('db-concentrationChart', 'bar', buckets, datasets, { scales: { y: { ticks: { callback: v => v + '%' } } } });
+  dbChart('db-concentrationChart', 'bar', buckets, datasets, {
+    scales: {
+      x: { title: { display: true, text: 'Market Percentile', color: BM.creamFaded } },
+      y: { title: { display: true, text: '% of Total Volume', color: BM.creamFaded }, ticks: { callback: v => v + '%' } },
+    },
+  });
 }
 
 // S6-23: HHI (clone)

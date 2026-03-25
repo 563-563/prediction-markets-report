@@ -515,13 +515,6 @@
 
     <p>The stack explains where value can accrue. User behavior determines whether it does. If Cadence Markets are powered by high-frequency retail flow, Narrative Markets by attention + positioning, and Hedging Markets by informed hedgers, then the next question is: do the observed flows actually match those stories? Let&rsquo;s look at <em>who trades</em>, <em>how they trade</em>, and what that implies about where true price discovery lives.</p>
 
-    <!-- Chart: Volume Concentration -->
-    <div class="chart-container wide fade-in">
-      <div class="chart-header">
-        <div class="chart-title">Volume Concentration: Power Law Distribution</div>
-      </div>
-      <div class="chart-wrapper"><canvas id="concentrationChart" height="280"></canvas></div>
-    </div>
   </section>
 
   <!-- ====== SECTION: User Behavior ====== -->
@@ -656,7 +649,7 @@
         <p><strong>What changed:</strong> Perps venues are experimenting with outcome markets as a generalized contract type, trying to absorb event risk into a perps-native stack.</p>
         <p><strong>Why it matters:</strong> If successful, this is the cleanest &ldquo;event risk becomes a standard trading primitive&rdquo; path for crypto-native traders (margining, UX, distribution already exists).</p>
         <p><strong>Examples:</strong></p>
-        <div class="innovation-example">Hyperliquid HIP-4 &ldquo;Outcome Markets&rdquo; live on testnet (and described as rolling binary options on HyperCore mark prices). Note that these are fully-collateralized since they are co-located with the HyperCore assets and function as hedging tools in their early iterations.</div>
+        <div class="innovation-example">Hyperliquid HIP-4 &ldquo;Outcome Markets&rdquo; live on testnet (and described as rolling binary options on HyperCore mark prices). These are fully-collateralized since they are co-located with the HyperCore assets. In archetype terms, these are Hedging Markets by design: the users are perps traders who already have directional exposure and want to hedge specific outcomes without leaving the platform. Hyperliquid is also rolling out portfolio margin, which means traders can hold perps and outcome positions in the same margin book, making it capital-efficient to hedge without locking up separate collateral. If HIP-4 gains traction, it would be the first crypto-native Hedging Market rail, filling a gap that only TradFi incumbents like CME currently occupy.</div>
       </div>
     </div>
 
@@ -1083,6 +1076,6 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <!-- App -->
-<script src="js/app.js?v=72"></script>
+<script src="js/app.js?v=73"></script>
 </body>
 </html>
