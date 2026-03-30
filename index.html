@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The State of Prediction Markets | blocmates.</title>
   <meta name="description" content="An interactive deep dive into the prediction market sector — rails, wrappers, and the stack war reshaping event contracts.">
-  <link rel="stylesheet" href="css/styles.css?v=41">
+  <link rel="stylesheet" href="css/styles.css?v=45">
 </head>
 <body>
 
@@ -822,7 +822,7 @@
     <!-- Stoplight Scorecard -->
     <div class="chart-container wide fade-in" style="padding:24px 28px">
       <div class="chart-title" style="margin-bottom:4px">The Prediction Market Scorecard</div>
-      <p class="chart-desc">A snapshot of competitive positioning across the key dimensions that matter. Hover over any cell for rationale. <span style="font-size:0.8em">&#x1f7e9; = strong today &nbsp; &#x1f7e8; = mixed / developing &nbsp; &#x1f7e5; = weak / not live &nbsp; &#x2b1c; = N/A</span></p>
+      <p class="chart-desc">A snapshot of competitive positioning across the key dimensions that matter. Hover over any cell for rationale. <span style="color:#4ade80">&#9679;</span> = strong today &nbsp; <span style="color:#fbbf24">&#9679;</span> = mixed / developing &nbsp; <span style="color:#f87171">&#9679;</span> = weak / not live &nbsp; <span style="color:rgba(237,230,221,0.25)">&#9679;</span> = N/A</p>
       <div class="table-wrap" style="margin-top:16px">
         <table class="data-table scorecard-table">
           <thead>
@@ -839,71 +839,71 @@
           <tbody>
             <tr>
               <td><span class="project-tag poly" style="font-size:0.82rem">Polymarket</span></td>
-              <td><span class="sc-cell sc-green" title="Deepest top-of-book liquidity in the sector, especially for headline markets">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-green" title="Thousands of markets with meaningful volume; permissionless listing drives breadth">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Growing via ICE data deal + Dow Jones embeds, but no native broker/app distribution yet">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-yellow" title="UMA optimistic oracle works but is novel; disputes are rare but untested at true institutional scale">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="Dow Jones modules across WSJ/Barron's/MarketWatch; ICE as global data distributor; de facto 'reference surface'">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Crypto-native rails limit access for regulated institutions; no CFTC oversight">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-green" title="Deepest top-of-book liquidity in the sector, especially for headline markets">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="Thousands of markets with meaningful volume; permissionless listing drives breadth">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Growing via ICE data deal + Dow Jones embeds, but no native broker/app distribution yet">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="UMA optimistic oracle works but is novel; disputes are rare but untested at true institutional scale">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="Dow Jones modules across WSJ/Barron's/MarketWatch; ICE as global data distributor; de facto 'reference surface'">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Crypto-native rails limit access for regulated institutions; no CFTC oversight">&#9679;</span></td>
             </tr>
             <tr>
               <td><span class="project-tag kalshi" style="font-size:0.82rem">Kalshi</span></td>
-              <td><span class="sc-cell sc-green" title="Strong top-of-book depth, especially in sports and S&P/Nasdaq markets">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Growing market count but still trailing Polymarket on long-tail breadth">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="Coinbase, Robinhood, and Interactive Brokers all launched with Kalshi as the underlying rail">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-green" title="CFTC-regulated DCM; settlement enforceability enables broker distribution and institutional trust">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="CNBC partnership for data/tickers, but not yet the 'reference surface' for probability data">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="CFTC-regulated; broker integrations live; Tradeweb partnership for institutional portal">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-green" title="Strong top-of-book depth, especially in sports and S&P/Nasdaq markets">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Growing market count but still trailing Polymarket on long-tail breadth">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="Coinbase, Robinhood, and Interactive Brokers all launched with Kalshi as the underlying rail">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="CFTC-regulated DCM; settlement enforceability enables broker distribution and institutional trust">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="CNBC partnership for data/tickers, but not yet the 'reference surface' for probability data">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="CFTC-regulated; broker integrations live; Tradeweb partnership for institutional portal">&#9679;</span></td>
             </tr>
             <tr>
               <td><span class="project-tag neutral" style="font-size:0.82rem">CME</span></td>
-              <td><span class="sc-cell sc-yellow" title="Incumbent derivatives liquidity, but prediction-specific markets are still early">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Limited prediction-style product range so far">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Distribution being built through consumer wrappers like FanDuel Predicts">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="Incumbent clearinghouse; gold-standard settlement infrastructure">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Strong data brand in derivatives, but not yet in prediction/event markets">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="Existing institutional client base; clearing/margin infrastructure ready">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Incumbent derivatives liquidity, but prediction-specific markets are still early">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Limited prediction-style product range so far">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Distribution being built through consumer wrappers like FanDuel Predicts">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="Incumbent clearinghouse; gold-standard settlement infrastructure">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Strong data brand in derivatives, but not yet in prediction/event markets">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="Existing institutional client base; clearing/margin infrastructure ready">&#9679;</span></td>
             </tr>
             <tr>
               <td><span class="project-tag neutral" style="font-size:0.82rem">Nasdaq</span></td>
-              <td><span class="sc-cell sc-red" title="Prediction-style binary options not yet live at scale (SEC filing stage)">&#x1f7e5;</span></td>
-              <td><span class="sc-cell sc-red" title="No live prediction markets yet">&#x1f7e5;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Massive existing distribution network, but untested for prediction products">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="SEC-regulated exchange; existing options/clearing infrastructure">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Strong brand in equities/options data, but no prediction market data presence yet">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="Institutional infrastructure already in place; regulatory relationships established">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-red" title="Prediction-style binary options not yet live at scale (SEC filing stage)">&#9679;</span></td>
+              <td><span class="sc-cell sc-red" title="No live prediction markets yet">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Massive existing distribution network, but untested for prediction products">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="SEC-regulated exchange; existing options/clearing infrastructure">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Strong brand in equities/options data, but no prediction market data presence yet">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="Institutional infrastructure already in place; regulatory relationships established">&#9679;</span></td>
             </tr>
             <tr>
               <td><span class="project-tag neutral" style="font-size:0.82rem">Cboe</span></td>
-              <td><span class="sc-cell sc-red" title="Prediction markets framework introduced but no live scale products yet">&#x1f7e5;</span></td>
-              <td><span class="sc-cell sc-red" title="No live prediction markets yet">&#x1f7e5;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Strong options distribution infrastructure, untested for prediction products">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="SEC-regulated; existing options clearing and settlement">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="VIX brand is strong, but no prediction-specific data brand yet">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-green" title="Institutional infrastructure ready; options market maker relationships">&#x1f7e9;</span></td>
+              <td><span class="sc-cell sc-red" title="Prediction markets framework introduced but no live scale products yet">&#9679;</span></td>
+              <td><span class="sc-cell sc-red" title="No live prediction markets yet">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Strong options distribution infrastructure, untested for prediction products">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="SEC-regulated; existing options clearing and settlement">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="VIX brand is strong, but no prediction-specific data brand yet">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="Institutional infrastructure ready; options market maker relationships">&#9679;</span></td>
             </tr>
             <tr>
               <td><span class="project-tag neutral" style="font-size:0.82rem">Coinbase</span> <span style="font-size:0.68rem;color:rgba(237,230,221,0.35)">(wrapper)</span></td>
-              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#x2b1c;</span></td>
-              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#x2b1c;</span></td>
-              <td><span class="sc-cell sc-green" title="110M+ verified users; prediction markets embedded in existing super-app">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-green" title="Regulated entity; routes through CFTC-regulated Kalshi rail">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Strong crypto brand, but not yet known for probability/event data">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Institutional arm exists (Coinbase Prime), but prediction market integration is retail-first">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#9679;</span></td>
+              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="110M+ verified users; prediction markets embedded in existing super-app">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="Regulated entity; routes through CFTC-regulated Kalshi rail">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Strong crypto brand, but not yet known for probability/event data">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Institutional arm exists (Coinbase Prime), but prediction market integration is retail-first">&#9679;</span></td>
             </tr>
             <tr>
               <td><span class="project-tag neutral" style="font-size:0.82rem">Robinhood</span> <span style="font-size:0.68rem;color:rgba(237,230,221,0.35)">(wrapper)</span></td>
-              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#x2b1c;</span></td>
-              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#x2b1c;</span></td>
-              <td><span class="sc-cell sc-green" title="24M+ funded accounts; prediction markets hub integrated in app">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-green" title="SEC/FINRA-regulated broker; initially routed through KalshiEX">&#x1f7e9;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Growing retail brand, but limited data/probability surface play">&#x1f7e8;</span></td>
-              <td><span class="sc-cell sc-yellow" title="Retail-focused platform; institutional capabilities exist but secondary">&#x1f7e8;</span></td>
+              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#9679;</span></td>
+              <td><span class="sc-cell sc-na" title="Wrapper - liquidity sits on the underlying rail, not here">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="24M+ funded accounts; prediction markets hub integrated in app">&#9679;</span></td>
+              <td><span class="sc-cell sc-green" title="SEC/FINRA-regulated broker; initially routed through KalshiEX">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Growing retail brand, but limited data/probability surface play">&#9679;</span></td>
+              <td><span class="sc-cell sc-yellow" title="Retail-focused platform; institutional capabilities exist but secondary">&#9679;</span></td>
             </tr>
           </tbody>
         </table>
       </div>
-      <p style="font-size:0.68rem;color:rgba(237,230,221,0.25);margin-top:8px">Nasdaq and Cboe liquidity is &#x1f7e5; because their prediction-style products are not live at scale today, even though their settlement/institutional infrastructure is strong. Coinbase and Robinhood liquidity is N/A because they are wrappers - their score reflects distribution and permissioning posture, not where the order book sits.</p>
+      <p style="font-size:0.68rem;color:rgba(237,230,221,0.25);margin-top:8px">Nasdaq and Cboe liquidity is &#9679; because their prediction-style products are not live at scale today, even though their settlement/institutional infrastructure is strong. Coinbase and Robinhood liquidity is N/A because they are wrappers - their score reflects distribution and permissioning posture, not where the order book sits.</p>
     </div>
   </section>
 
@@ -911,8 +911,8 @@
 
 <!-- Footer -->
 <footer class="report-footer">
-  <div class="footer-brand">blocmates<span class="dot">.</span></div>
-  <div class="footer-sub">The State of Prediction Markets  - Interactive Research Report  - March 2026</div>
+  <div class="footer-brand"><img src="assets/logo.png" alt="blocmates." style="height:24px;width:auto"></div>
+  <div class="footer-sub">The State of Prediction Markets - Interactive Research Report - April 2026</div>
 </footer>
 
 </div><!-- /reportView -->
@@ -1059,8 +1059,8 @@
   </div>
 
   <footer class="report-footer">
-    <div class="footer-brand">blocmates<span class="dot">.</span></div>
-    <div class="footer-sub">Data Dashboard  - The State of Prediction Markets  - March 2026</div>
+    <div class="footer-brand"><img src="assets/logo.png" alt="blocmates." style="height:24px;width:auto"></div>
+    <div class="footer-sub">Data Dashboard - The State of Prediction Markets - April 2026</div>
   </footer>
 
 </div><!-- /dashboard -->
@@ -1075,6 +1075,6 @@
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
 <!-- App -->
-<script src="js/app.js?v=73"></script>
+<script src="js/app.js?v=76"></script>
 </body>
 </html>

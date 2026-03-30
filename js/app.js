@@ -53,6 +53,8 @@ Chart.defaults.elements.line.tension = 0.3;
 Chart.defaults.elements.line.borderWidth = 2;
 Chart.defaults.scale.grid = { color: BM.gridColor };
 Chart.defaults.scale.border = { color: BM.gridColor };
+Chart.defaults.layout = { padding: { left: 4, right: 12, top: 8, bottom: 4 } };
+Chart.defaults.scale.ticks = { ...Chart.defaults.scale.ticks, padding: 6 };
 // Disable animation to force synchronous drawing (prevents blank charts when canvas is off-screen or in hidden container)
 Chart.defaults.animation = false;
 // Fix Chart.js 4.4.7 bug: bar elements get base=NaN in responsive mode,
@@ -127,6 +129,18 @@ function timeXAxis(skipLabels = 4) {
       }
     }
   };
+}
+
+// --- HiDPI canvas helper ---
+function setupHiDPICanvas(canvas, logicalW, logicalH) {
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = logicalW * dpr;
+  canvas.height = logicalH * dpr;
+  canvas.style.width = logicalW + 'px';
+  canvas.style.height = logicalH + 'px';
+  const ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  return { ctx, w: logicalW, h: logicalH };
 }
 
 // --- Shared platform color map (case-insensitive lookup) ---
@@ -2229,9 +2243,7 @@ function renderHHI() {
   }
   const canvas = document.getElementById('hhiPlayground');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width = canvas.offsetWidth;
-  const h = canvas.height = 280;
+  const { ctx, w, h } = setupHiDPICanvas(canvas, canvas.offsetWidth, 280);
   ctx.clearRect(0, 0, w, h);
   const barW = (w - 8) / 10;
   hhiShares.forEach((s, i) => {
@@ -2339,9 +2351,7 @@ let sankeyNodes, sankeyFlows, sankeyHover = -1;
 function drawSankey(highlightNode) {
   const canvas = document.getElementById('sankeyCanvas');
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width = canvas.offsetWidth;
-  const h = canvas.height = 380;
+  const { ctx, w, h } = setupHiDPICanvas(canvas, canvas.offsetWidth, 380);
   ctx.clearRect(0, 0, w, h);
 
   const cols = [w * 0.05, w * 0.28, w * 0.52, w * 0.78];
@@ -2505,9 +2515,7 @@ function drawSankey(highlightNode) {
 function drawSankeyOnCanvas(canvasId, highlightNode, onHoverCb) {
   const canvas = document.getElementById(canvasId);
   if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const w = canvas.width = canvas.offsetWidth;
-  const h = canvas.height = 380;
+  const { ctx, w, h } = setupHiDPICanvas(canvas, canvas.offsetWidth, 380);
   ctx.clearRect(0, 0, w, h);
   const cols = [w*0.05, w*0.28, w*0.52, w*0.78], nodeW = 14;
   const flows = [[0,3,30],[0,4,20],[0,5,5],[1,5,20],[1,4,16],[1,3,6],[2,3,16],[2,4,4],[3,6,20],[3,7,14],[3,8,8],[3,9,6],[4,6,18],[4,7,6],[4,9,10],[5,6,14],[5,8,6],[6,10,30],[6,13,6],[7,12,16],[8,11,14],[9,11,10],[9,13,4]];
@@ -2555,7 +2563,7 @@ function renderRptHHI() {
   const vd=document.getElementById('rpt-hhi-verdict');
   if(vd){if(hhi<1500){vd.textContent='Competitive';vd.style.color='#00de95';}else if(hhi<2500){vd.textContent='Moderately Concentrated';vd.style.color='#e6a93e';}else{vd.textContent='Highly Concentrated';vd.style.color='#fe4a49';}}
   const canvas=document.getElementById('rptHhiPlayground');if(!canvas)return;
-  const ctx=canvas.getContext('2d');const w=canvas.width=canvas.offsetWidth;const h=canvas.height=240;ctx.clearRect(0,0,w,h);
+  const {ctx,w,h}=setupHiDPICanvas(canvas,canvas.offsetWidth,240);ctx.clearRect(0,0,w,h);
   const barW=(w-8)/10;
   rptHhiShares.forEach((s,i)=>{const barH=(s/80)*(h-50);const x=4+i*barW;const y=h-16-barH;const pct=(s/total)*100;
     ctx.fillStyle=rptHhiDrag===i?'rgba(230,169,62,1)':`rgba(230,169,62,${Math.min(0.3+pct/40,1)})`;ctx.beginPath();ctx.roundRect(x+2,y,barW-4,barH,4);ctx.fill();
