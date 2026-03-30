@@ -921,10 +921,27 @@
 <div id="dashboardView" class="hidden">
 <div class="dashboard">
 
+  <!-- Methodology -->
+  <div class="dash-section">
+    <div class="dash-explainer" style="margin-bottom:32px">
+      <h3 style="margin-top:0;margin-bottom:12px;font-size:1.1rem">How we built this</h3>
+      <p>This dashboard runs on 38 datasets pulled from <a href="https://dune.com" target="_blank">Dune Analytics</a>, covering Polymarket, Kalshi, Opinion, Limitless, and UMA. Data refreshes daily via automated pipeline. For the execution quality deep dive (Section 6), we used <a href="https://github.com/Jon-Becker/prediction-market-analysis" target="_blank">Jon Becker's open prediction market dataset</a>: 476 million trades across Kalshi (Jun 2021 to Nov 2025) and Polymarket (Mar 2023 to Nov 2025), 53 GB of raw Parquet data processed offline via DuckDB.</p>
+      <h4 style="margin-top:16px;margin-bottom:8px;font-size:0.9rem">Time coverage</h4>
+      <p style="margin-bottom:8px">Sections 1-5 and 7 update daily and stretch back to Apr 2024. The execution analysis in Section 6 is a static snapshot comparing Q4 2024 vs Q4 2025. Note: "2025 Q4" does not include December values.</p>
+      <h4 style="margin-top:16px;margin-bottom:8px;font-size:0.9rem">What this doesn't capture</h4>
+      <ul>
+        <li>Off-chain Kalshi order flow (on-chain settlement data only, not the full order book)</li>
+        <li>Fee analysis uses Polymarket's <a href="https://docs.polymarket.com/trading/fees" target="_blank">new fee structure</a>, effective March 30, 2026</li>
+        <li>On-chain user metrics reflect wallet addresses, not unique humans</li>
+        <li>Custom execution metrics (bounce, displacement) are proxies with known limitations, explained in Section 6</li>
+      </ul>
+    </div>
+  </div>
+
   <!-- S1 — Market Size -->
   <div class="dash-section">
     <h2 class="dash-section-title">S1 — Market Size <span>5 charts</span></h2>
-    <p class="dash-section-desc">The sector has gone from a crypto curiosity to a multi-billion-dollar weekly market. But how much of that volume is real economic activity, and how much is leveraged speculation? Who&rsquo;s gaining share  - and is the dominance picture shifting? Start here to understand the raw scale of what&rsquo;s being traded.</p>
+    <p class="dash-section-desc">Prediction markets now do billions in weekly volume. But how much of that is genuine economic activity, and how much is leveraged speculation? Check who's gaining share and whether the dominance picture is actually shifting.</p>
     <div class="dash-grid">
       <div class="dash-card"><div class="chart-title">Weekly Volume (USD Spent)</div><div class="chart-wrapper"><canvas id="db-volumeChart"></canvas></div></div>
       <div class="dash-card"><div class="chart-title">Volume Market Share (%)</div><div class="chart-wrapper"><canvas id="db-volumeShareChart"></canvas></div></div>
@@ -937,7 +954,7 @@
   <!-- S2 — Sector Breakdown -->
   <div class="dash-section">
     <h2 class="dash-section-title">S2 — Sector Breakdown <span>2 charts</span></h2>
-    <p class="dash-section-desc">Kalshi&rsquo;s sports launch changed the product mix overnight. Is sports cannibalizing the core events business, or is it additive growth? Watch the share chart  - the answer has implications for whether Kalshi is building a diversified exchange or a sportsbook in a CFTC wrapper.</p>
+    <p class="dash-section-desc">Kalshi's sports launch reshaped its product mix overnight. The question is whether sports is cannibalizing the core events business or driving additive growth. The share chart tells you if Kalshi is building a diversified exchange or a sportsbook in a CFTC wrapper.</p>
     <div class="dash-grid">
       <div class="dash-card full-width"><div class="chart-title">Kalshi Sports vs Non-Sports Volume</div><div class="chart-wrapper"><canvas id="db-kalshiSportsChart"></canvas></div></div>
       <div class="dash-card full-width"><div class="chart-title">Kalshi Sports vs Non-Sports Share (%)</div><div class="chart-wrapper"><canvas id="db-kalshiSportsDomChart"></canvas></div></div>
@@ -946,8 +963,8 @@
 
   <!-- S3 — Revenue -->
   <div class="dash-section">
-    <h2 class="dash-section-title">S3 — Revenue <span>3 charts</span></h2>
-    <p class="dash-section-desc">Volume alone doesn&rsquo;t tell you whether a platform is capital-efficient. How many dollars of volume does each dollar of locked liquidity generate? And which individual markets are driving the numbers? Dig into the capital efficiency trend and the 30-day leaderboard to see where the action concentrates.</p>
+    <h2 class="dash-section-title">S3 — Market Structure of Polymarket <span>3 charts</span></h2>
+    <p class="dash-section-desc">Polymarket isn't just one product. Binary markets, multi-outcome markets, and combo structures all behave differently. These charts break down the volume mix, show how efficiently TVL converts into trading activity, and surface which individual markets are driving the headline numbers.</p>
     <div class="dash-grid">
       <div class="dash-card full-width"><div class="chart-title">Binary vs Multi-Outcome Volume</div><p class="chart-desc">Polymarket supports multi-outcome markets (e.g. &ldquo;Who will win?&rdquo; with 5+ candidates). How much volume flows to simple yes/no contracts vs richer multi-leg structures?</p><div class="chart-wrapper"><canvas id="db-binaryMultiChart"></canvas></div></div>
       <div class="dash-card full-width"><div class="chart-title">Capital Efficiency (Volume per $ TVL)</div><p class="chart-desc">How many dollars of trading volume does each dollar of locked liquidity generate? Higher = more efficient capital deployment. The line tracks the ratio; bars show average TVL.</p><div class="chart-wrapper"><canvas id="db-capEffChart"></canvas></div></div>
@@ -958,7 +975,7 @@
   <!-- S4 — Trust -->
   <div class="dash-section">
     <h2 class="dash-section-title">S4 — Trust <span>3 charts + table</span></h2>
-    <p class="dash-section-desc">Polymarket&rsquo;s settlement layer runs on UMA&rsquo;s optimistic oracle  - a system where anyone can dispute a market resolution by staking tokens. As volume and market count explode, are disputes keeping pace or falling behind? If disputes per million dollars of volume is declining, it suggests the trust infrastructure is scaling. If not, it&rsquo;s a ticking time bomb.</p>
+    <p class="dash-section-desc">Polymarket settles markets through UMA's optimistic oracle, where anyone can dispute a resolution by staking tokens. As volume explodes, the key question is whether disputes are scaling with it or falling behind. A declining dispute rate per million dollars suggests the trust layer is holding up. A rising one is a red flag.</p>
     <div class="dash-grid">
       <div class="dash-card full-width"><div class="chart-title">UMA Disputes — Raw Data</div><div id="db-disputeTable" class="dash-table-wrapper" style="max-height:300px;overflow-y:auto"></div></div>
       <div class="dash-card"><div class="chart-title">UMA Disputes Over Time</div><div class="chart-wrapper"><canvas id="db-disputeChart"></canvas></div></div>
@@ -970,7 +987,7 @@
   <!-- S5 — Users -->
   <div class="dash-section">
     <h2 class="dash-section-title">S5 — Users <span>4 charts</span></h2>
-    <p class="dash-section-desc">Growth in volume means nothing if it&rsquo;s the same 50 wallets recycling capital. Are prediction markets actually onboarding new users, or is the growth story just whale concentration by another name? Track the new-vs-returning split, watch the average trade size for signs of retail adoption, and check how much volume the top 10% of wallets control.</p>
+    <p class="dash-section-desc">Volume growth means nothing if it's the same 50 wallets recycling capital. Are prediction markets genuinely onboarding new participants, or is the growth story just whale concentration dressed up? Track the new-vs-returning split, average trade size, and how much the top 10% of wallets control.</p>
     <div class="dash-grid">
       <div class="dash-card full-width"><div class="chart-title">Unique Traders Over Time (Weekly)</div><div class="chart-wrapper"><canvas id="db-uniqueTradersChart"></canvas></div></div>
       <div class="dash-card full-width"><div class="chart-title">Polymarket: New vs Returning Traders (Weekly)</div><p class="chart-desc">Polymarket only  - Kalshi does not publish wallet-level data onchain.</p><div class="chart-wrapper"><canvas id="db-tradersChart"></canvas></div></div>
@@ -994,7 +1011,7 @@
     </div>
 
     <div class="dash-subsection-title">Calibration</div>
-    <p class="dash-section-desc">If a contract trades at 70&cent;, does the outcome actually happen 70% of the time? These charts test whether prediction market prices are honest probability estimates  - and where they break down.</p>
+    <p class="dash-section-desc">If a contract trades at 70 cents, does the outcome actually happen 70% of the time? These charts test whether prediction market prices are reliable probability estimates and where they start to break down.</p>
     <div class="dash-grid">
       <div class="dash-card full-width"><div class="chart-title">Institutional-Grade Markets ($10K Within 1&cent;)</div><p class="chart-desc">Number of markets where a $10K trade moves the price by less than 1 cent  - a proxy for institutional-grade depth.</p><div class="chart-wrapper"><canvas id="db-institutionalChart"></canvas></div><div class="chart-caption">How many markets can absorb a $10K trade without moving the price (by at most 1&cent;)?</div></div>
       <div class="dash-card"><div class="chart-title">Calibration Curve</div><p class="chart-desc">Implied probability vs actual win rate. Perfect calibration = the diagonal.</p><div class="chart-wrapper"><canvas id="db-calibrationChart"></canvas></div><div class="chart-caption">Are prediction market prices actually reliable probability estimates?</div></div>
@@ -1004,7 +1021,7 @@
     </div>
 
     <div class="dash-subsection-title">Bounce &amp; Displacement</div>
-    <p class="dash-section-desc">Accuracy is one thing  - but can you actually trade on it? These charts measure the hidden cost of crossing the spread and how much your trade moves the market against you.</p>
+    <p class="dash-section-desc">Accurate prices are useless if the cost of trading eats your edge. These charts measure the hidden cost of crossing the spread and how far your trade moves the market against you.</p>
     <div class="dash-explainer" style="font-size:0.8rem">
       <p><strong>Bounce (Spread Proxy)</strong>  - a useful proxy for bid-ask spread is the absolute price change between consecutive opposite-signed trades in the same market. If Trade N is buyer-initiated and Trade N+1 is seller-initiated, then the bounce approximates the spread captured by bid-ask bounce.</p>
       <p class="dash-equation">Bounce = |P<sub>N+1</sub> &minus; P<sub>N</sub>|&ensp; <span style="opacity:0.5">where Trade N and Trade N+1 are opposite-signed</span></p>
@@ -1023,7 +1040,7 @@
     </div>
 
     <div class="dash-subsection-title">Market Microstructure</div>
-    <p class="dash-section-desc">Execution quality doesn&rsquo;t scale uniformly. The top 10 markets trade like liquid futures  - but what happens when you step outside the headlines? These charts reveal the &ldquo;execution cliff&rdquo; and the long-tail tax.</p>
+    <p class="dash-section-desc">The top 10 markets trade like liquid futures. Step outside the headlines and the picture changes fast. These charts reveal the execution cliff and the long-tail tax you pay for trading anything beyond the front page.</p>
     <div class="dash-grid">
       <div class="dash-card full-width"><div class="chart-header"><div class="chart-title">Displacement by Market Decile</div><div class="chart-toggle"><button class="chart-btn active" data-chart="db-decileChart" data-view="all">All</button><button class="chart-btn" data-chart="db-decileChart" data-view="kalshi_yoy">Kalshi YoY</button><button class="chart-btn" data-chart="db-decileChart" data-view="poly_yoy">Poly YoY</button><button class="chart-btn" data-chart="db-decileChart" data-view="2024_platform">2024</button><button class="chart-btn" data-chart="db-decileChart" data-view="2025_platform">2025</button></div></div><div class="chart-wrapper"><canvas id="db-decileChart"></canvas></div><div class="chart-caption">How fast does execution quality collapse outside the top-volume markets?</div></div>
       <div class="dash-card full-width"><div class="chart-header"><div class="chart-title">Cohort Displacement: Top 10% vs Bottom 50%</div><div class="chart-toggle"><button class="chart-btn active" data-chart="db-cohortChart" data-view="all">All</button><button class="chart-btn" data-chart="db-cohortChart" data-view="kalshi">Kalshi</button><button class="chart-btn" data-chart="db-cohortChart" data-view="poly">Poly</button><button class="chart-btn" data-chart="db-cohortChart" data-view="top10">Top 10%</button><button class="chart-btn" data-chart="db-cohortChart" data-view="bottom50">Bottom 50%</button></div></div><div class="chart-wrapper"><canvas id="db-cohortChart"></canvas></div><div class="chart-caption">Do bottom-50% markets trade like a different asset class?</div></div>
@@ -1033,7 +1050,7 @@
     </div>
 
     <div class="dash-subsection-title">Taker Flow &amp; Concentration</div>
-    <p class="dash-section-desc">Who&rsquo;s on each side of the trade, and is the market a one-event show? These charts track taker behavior, directional bias, profitability by side, and whether volume is diversifying or concentrating.</p>
+    <p class="dash-section-desc">Who's on each side of the trade, and is the ecosystem a one-event show? These charts track taker behavior, directional bias, profitability by side, and whether volume is diversifying or still concentrating around a handful of markets.</p>
     <p style="font-size:0.72rem;color:rgba(237,230,221,0.3);margin:-6px 0 10px">&#9888; Taker behavior data was largely collected before Polymarket&rsquo;s fee rollout (March 30, 2026). Fee introduction may shift these patterns.</p>
     <div class="dash-grid">
       <div class="dash-card"><div class="chart-title">Kalshi Taker YES/NO Ratio</div><div class="chart-wrapper"><canvas id="db-kalshiTakerChart"></canvas></div><div class="chart-caption">Are Kalshi traders increasingly betting on "Yes" outcomes?</div></div>
@@ -1048,7 +1065,7 @@
   <!-- S7 — Time-to-Resolution -->
   <div class="dash-section">
     <h2 class="dash-section-title">S7 — Time-to-Resolution <span>2 charts</span></h2>
-    <p class="dash-section-desc">Conventional wisdom says near-resolution markets should be the most liquid  - the outcome is almost known. But the data tells a different story. Watch what happens to spreads and price impact as contracts enter their final hours. If you&rsquo;re trading late-stage markets, you&rsquo;re paying more than you think.</p>
+    <p class="dash-section-desc">Conventional wisdom says near-resolution markets should be the most liquid, since the outcome is almost known. The data says otherwise. Watch what happens to spreads and price impact as contracts enter their final hours. If you're trading late-stage markets, you're probably paying more than you realize.</p>
     <div class="dash-grid">
       <div class="dash-card"><div class="chart-title">Spread Widening Near Resolution</div><div class="chart-wrapper"><canvas id="db-settlementSpreadChart"></canvas></div><div class="chart-caption">Does liquidity dry up as contracts approach settlement? Tracks spread at 30+d, 7-30d, 1-7d, &lt;1d before resolution.</div></div>
       <div class="dash-card"><div class="chart-title">Price Impact Near Resolution</div><div class="chart-wrapper"><canvas id="db-settlementImpactChart"></canvas></div><div class="chart-caption">Does liquidity dry up as contracts approach settlement? Tracks price impact at 30+d, 7-30d, 1-7d, &lt;1d before resolution.</div></div>
@@ -1074,7 +1091,10 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
+<!-- Pretext: DOM-free text measurement -->
+<script src="js/pretext.min.js"></script>
+
 <!-- App -->
-<script src="js/app.js?v=76"></script>
+<script src="js/app.js?v=77"></script>
 </body>
 </html>

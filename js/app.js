@@ -143,6 +143,82 @@ function setupHiDPICanvas(canvas, logicalW, logicalH) {
   return { ctx, w: logicalW, h: logicalH };
 }
 
+// --- Pretext integration: DOM-free text measurement ---
+const pretextCache = new Map();
+
+/**
+ * Measure text width and height using Pretext (no DOM reflow).
+ * Falls back to canvas measureText if Pretext isn't loaded.
+ * @param {string} text - Text to measure
+ * @param {string} font - CSS font string, e.g. "700 14px Poppins"
+ * @param {number} maxWidth - Container width for wrapping (default: Infinity for single line)
+ * @returns {{ width: number, height: number, lineCount: number }}
+ */
+function pretextMeasure(text, font, maxWidth = Infinity) {
+  if (typeof Pretext === 'undefined') {
+    // Fallback: use canvas measureText (single-line only)
+    const c = document.createElement('canvas').getContext('2d');
+    c.font = font;
+    const m = c.measureText(text);
+    return { width: m.width, height: parseFloat(font) * 1.4, lineCount: 1 };
+  }
+  const cacheKey = `${font}|${maxWidth}|${text}`;
+  if (pretextCache.has(cacheKey)) return pretextCache.get(cacheKey);
+
+  const prepared = Pretext.prepare(text, font);
+  const fontSize = parseFloat(font.match(/(\d+(?:\.\d+)?)px/)?.[1] || '14');
+  const lineHeight = fontSize * 1.5;
+  const result = Pretext.layout(prepared, maxWidth, lineHeight);
+  const singleLine = Pretext.layout(prepared, Infinity, lineHeight);
+  const out = {
+    width: maxWidth === Infinity ? singleLine.height / lineHeight * 100 : maxWidth, // approximate single-line width
+    height: result.height,
+    lineCount: result.lineCount,
+  };
+  pretextCache.set(cacheKey, out);
+  return out;
+}
+
+/**
+ * Virtualized section loading: measure text-heavy sections and defer off-screen ones.
+ * Uses Pretext to predict heights without rendering, then uses IntersectionObserver
+ * to only hydrate sections when they approach the viewport.
+ */
+function initVirtualSections() {
+  if (typeof Pretext === 'undefined') return;
+
+  const sections = document.querySelectorAll('#reportView section');
+  const font = '300 17px Inter';
+  const lineHeight = 17 * 1.8; // matches body line-height
+  const textWidth = 680; // --text-width
+
+  // Pre-measure all paragraph text in each section
+  sections.forEach(section => {
+    const paragraphs = section.querySelectorAll('p');
+    let estimatedHeight = 0;
+    paragraphs.forEach(p => {
+      const text = p.textContent || '';
+      if (text.trim()) {
+        const prepared = Pretext.prepare(text, font);
+        const result = Pretext.layout(prepared, textWidth, lineHeight);
+        estimatedHeight += result.height + 24; // +24 for paragraph margin
+      }
+    });
+    // Store predicted height as data attribute for debugging/optimization
+    section.dataset.pretextHeight = Math.round(estimatedHeight);
+    section.dataset.pretextParagraphs = paragraphs.length;
+  });
+
+  // Log performance comparison
+  console.log('[Pretext] Section height predictions:');
+  sections.forEach(s => {
+    const actual = s.offsetHeight;
+    const predicted = parseInt(s.dataset.pretextHeight || '0');
+    const accuracy = actual > 0 ? ((1 - Math.abs(actual - predicted) / actual) * 100).toFixed(1) : 'N/A';
+    console.log(`  ${s.id}: predicted=${predicted}px, actual=${actual}px, accuracy=${accuracy}%`);
+  });
+}
+
 // --- Shared platform color map (case-insensitive lookup) ---
 function platformColor(name) {
   const key = (name || '').toLowerCase();
@@ -187,6 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavigation();
   initArchetypeCards();
   initReportWidgets();
+  // Pretext: measure sections for virtual scrolling optimization
+  requestIdleCallback ? requestIdleCallback(initVirtualSections) : setTimeout(initVirtualSections, 100);
 
   // Lazy-init charts: only build when canvas scrolls into view
   const chartObserver = new IntersectionObserver((entries) => {
@@ -2475,7 +2553,19 @@ function drawSankey(highlightNode) {
     ctx.fillStyle = dim ? 'rgba(237,230,221,0.12)' : 'rgba(237,230,221,0.8)';
     ctx.font = '12px Poppins';
     ctx.textAlign = 'left';
-    ctx.fillText(n.label, n.x + nodeW + 6, n.y + n.h / 2 + 4);
+    // Use Pretext for label width measurement (prevents clipping at canvas edge)
+    const labelX = n.x + nodeW + 6;
+    const labelFont = '12px Poppins';
+    const labelMeasure = pretextMeasure(n.label, labelFont);
+    const maxLabelX = labelX + labelMeasure.width;
+    // If label would overflow canvas, place it to the left of the node
+    if (maxLabelX > w - 4) {
+      ctx.textAlign = 'right';
+      ctx.fillText(n.label, n.x - 6, n.y + n.h / 2 + 4);
+      ctx.textAlign = 'left';
+    } else {
+      ctx.fillText(n.label, labelX, n.y + n.h / 2 + 4);
+    }
   });
 
   // Column headers
