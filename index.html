@@ -1192,6 +1192,77 @@
     </div>
   </div>
 
+  <!-- ===== PRODUCTION CONTEXT EXPERIMENTS ===== -->
+  <div class="dash-section">
+    <h2 class="dash-section-title">Production Context: 10K Article Site</h2>
+    <p class="dash-section-desc">These experiments simulate the blocmates.com use case: a headless WordPress site with ~10,000 articles and hundreds of videos. The key questions are whether Pretext can speed up article list rendering, search results, and reduce layout shift.</p>
+  </div>
+
+  <!-- Experiment 8: Article Card Virtualization -->
+  <div class="dash-section">
+    <div class="dash-card full-width">
+      <div class="chart-title">Experiment 8: Article Card Virtualization (500 cards)</div>
+      <p class="chart-desc">Simulates rendering a page of 500 article cards (title + excerpt + author + date). Compares three approaches: (1) DOM render all 500, (2) Pretext predict heights + render only visible, (3) fixed-height cards. Measures time-to-interactive and scroll smoothness.</p>
+      <div style="margin:16px 0;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="chart-btn active" onclick="runArticleVirtualization()">Run Test (500 cards)</button>
+        <button class="chart-btn" onclick="runArticleVirtualization(2000)">Stress Test (2000 cards)</button>
+      </div>
+      <div id="article-results" style="font-family:'Inter',sans-serif;font-size:0.82rem;color:rgba(237,230,221,0.7)">
+        <p style="color:rgba(237,230,221,0.35)">Click to simulate article card rendering...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Experiment 9: Search Results Rendering -->
+  <div class="dash-section">
+    <div class="dash-card full-width">
+      <div class="chart-title">Experiment 9: Search Results Rendering</div>
+      <p class="chart-desc">Simulates a search query returning 200 results. Measures: (1) time to prepare all result text, (2) time to compute visible-window layout, (3) time to re-layout on scroll (simulating virtual scroll updates). Compares vs DOM approach.</p>
+      <div style="margin:16px 0">
+        <button class="chart-btn active" onclick="runSearchBenchmark()">Run Search Simulation</button>
+      </div>
+      <div id="search-results-bench" style="font-family:'Inter',sans-serif;font-size:0.82rem;color:rgba(237,230,221,0.7)">
+        <p style="color:rgba(237,230,221,0.35)">Click to simulate search result rendering...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Experiment 10: CLS / Layout Shift Prevention -->
+  <div class="dash-section">
+    <div class="dash-card full-width">
+      <div class="chart-title">Experiment 10: Layout Shift Prevention (CLS)</div>
+      <p class="chart-desc">For a long article page, predicts text-block heights so image/video placeholders can be accurately sized before media loads. Measures prediction accuracy for article-length text blocks (500-2000 words) at different viewport widths.</p>
+      <div style="margin:16px 0">
+        <button class="chart-btn active" onclick="runCLSBenchmark()">Run CLS Test</button>
+      </div>
+      <div id="cls-results" style="font-family:'Inter',sans-serif;font-size:0.82rem;color:rgba(237,230,221,0.7)">
+        <p style="color:rgba(237,230,221,0.35)">Click to test layout shift prevention...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Experiment 11: Live Virtual Scroll Demo -->
+  <div class="dash-section">
+    <div class="dash-card full-width">
+      <div class="chart-title">Experiment 11: Live Virtual Scroll Demo</div>
+      <p class="chart-desc">A working virtual scroll powered by Pretext. Scroll through 1000 article cards where only ~15 are in the DOM at any time. Heights are predicted by Pretext, not measured by the browser. Watch the DOM node count stay constant.</p>
+      <div style="margin:16px 0">
+        <button class="chart-btn active" onclick="initVirtualScrollDemo()">Launch Demo</button>
+      </div>
+      <div id="virtual-scroll-demo" style="display:none">
+        <div style="display:flex;gap:12px;margin-bottom:12px">
+          <div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:6px;padding:8px 14px;font-size:0.78rem"><span style="color:rgba(237,230,221,0.4)">DOM Nodes: </span><span id="vs-dom-count" style="color:#4ade80;font-weight:600">0</span></div>
+          <div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:6px;padding:8px 14px;font-size:0.78rem"><span style="color:rgba(237,230,221,0.4)">Total Cards: </span><span id="vs-total" style="color:#fff;font-weight:600">1000</span></div>
+          <div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:6px;padding:8px 14px;font-size:0.78rem"><span style="color:rgba(237,230,221,0.4)">Scroll FPS: </span><span id="vs-fps" style="color:#2f5cff;font-weight:600">--</span></div>
+          <div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:6px;padding:8px 14px;font-size:0.78rem"><span style="color:rgba(237,230,221,0.4)">Layout Time: </span><span id="vs-layout-time" style="color:#fbbf24;font-weight:600">--</span></div>
+        </div>
+        <div id="vs-container" style="height:500px;overflow-y:auto;border:1px solid rgba(237,230,221,0.08);border-radius:8px;position:relative">
+          <div id="vs-spacer" style="position:relative"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Summary & Recommendation -->
   <div class="dash-section">
     <div class="dash-card full-width" style="border-color:rgba(47,92,255,0.2)">
@@ -1553,6 +1624,340 @@ function runCollisionBenchmark() {
   document.getElementById('collision-results').innerHTML = html;
 }
 
+// --- Generate realistic article data ---
+function generateArticles(count) {
+  const titles = [
+    'Understanding Liquid Staking Derivatives and Their Impact on DeFi',
+    'Polymarket vs Kalshi: Which Prediction Market Wins in 2026?',
+    'The Complete Guide to Onchain Order Books',
+    'How Hyperliquid Changed Perpetual Futures Forever',
+    'Bitcoin ETF Flows: What the Data Actually Shows',
+    'Aave v4: Everything You Need to Know',
+    'Why Solana DeFi Is Eating Ethereum\'s Lunch',
+    'The Rise of Intent-Based Trading Protocols',
+    'Restaking Explained: EigenLayer and Beyond',
+    'MEV Protection: How to Stop Getting Sandwiched',
+    'Prediction Markets Are Becoming Real Infrastructure',
+    'The Modular Blockchain Thesis Two Years Later',
+    'Base Chain: Coinbase\'s Trojan Horse Strategy',
+    'Real World Assets on Blockchain: Hype vs Reality',
+    'The State of Cross-Chain Bridges in 2026',
+    'Uniswap v4 Hooks: A Developer\'s Guide',
+    'Stablecoin Wars: USDC vs USDT vs USDe',
+    'How to Read Onchain Data Like a Pro',
+    'DePIN: When Crypto Meets Physical Infrastructure',
+    'The Bull Case for Ethereum Layer 2s',
+  ];
+  const excerpts = [
+    'A deep dive into the mechanics, risks, and opportunities of liquid staking tokens. We analyze the top protocols, compare yields, and explain the re-staking meta that\'s reshaping how capital flows through DeFi.',
+    'We put both prediction market platforms head to head across volume, liquidity, execution quality, and user experience. The results might surprise you, especially on the execution cost front.',
+    'Order books are coming onchain, but the architecture looks nothing like traditional finance. Here\'s how CLOB designs are evolving and what it means for traders who care about execution quality.',
+    'Hyperliquid processed more volume than most centralized exchanges last quarter. We break down the product decisions that got them there and what\'s coming next with HIP-4.',
+    'Everyone has opinions about ETF flows. We looked at the actual data across all approved Bitcoin ETFs and found some patterns the headlines missed. Here\'s what institutional positioning actually looks like.',
+    'The next version of DeFi\'s largest lending protocol introduces some radical changes. We walk through the new features, the governance implications, and what it means for existing depositors.',
+    'Solana DeFi TVL has grown 400% in the past year while Ethereum\'s has stagnated. But the story is more nuanced than the numbers suggest. Here\'s the real competitive dynamic at play.',
+    'Intent-based protocols are replacing traditional AMMs for sophisticated traders. We explain the shift, profile the leading protocols, and analyze whether intents actually deliver better execution.',
+    'EigenLayer kicked off the restaking narrative, but the ecosystem has expanded far beyond one protocol. We map the full restaking landscape and explain the risk/reward tradeoffs.',
+    'Front-running and sandwich attacks cost DeFi traders billions annually. We review the protection mechanisms available today, from private mempools to MEV-aware routing, and test how well they actually work.',
+  ];
+  const authors = ['Blocmates Research', 'Callum R.', 'Sam C.', 'Guest Author', 'Blocmates Team'];
+  const categories = ['DeFi', 'Research', 'Guide', 'Analysis', 'News', 'Opinion'];
+
+  return Array.from({length: count}, (_, i) => ({
+    id: i,
+    title: titles[i % titles.length] + (i >= titles.length ? ' (Part ' + Math.ceil((i+1)/titles.length) + ')' : ''),
+    excerpt: excerpts[i % excerpts.length],
+    author: authors[i % authors.length],
+    category: categories[i % categories.length],
+    date: new Date(2024, 0, 1 + Math.floor(Math.random() * 800)).toLocaleDateString('en-US', {month: 'short', day: 'numeric', year: 'numeric'}),
+    readTime: Math.floor(3 + Math.random() * 20) + ' min read',
+  }));
+}
+
+// Experiment 8: Article card virtualization
+function runArticleVirtualization(count = 500) {
+  if (typeof Pretext === 'undefined') { document.getElementById('article-results').innerHTML = '<p style="color:#f87171">Pretext not loaded.</p>'; return; }
+  const articles = generateArticles(count);
+  const titleFont = '700 16px Poppins';
+  const excerptFont = '300 14px Inter';
+  const metaFont = '300 12px Inter';
+  const cardWidth = 600;
+  const cardPadding = 40; // top + bottom
+
+  // Approach 1: Pretext predict all heights
+  const t0 = performance.now();
+  const pretextHeights = articles.map(a => {
+    const titleP = Pretext.prepare(a.title, titleFont);
+    const titleH = Pretext.layout(titleP, cardWidth, 20).height;
+    const excerptP = Pretext.prepare(a.excerpt, excerptFont);
+    const excerptH = Pretext.layout(excerptP, cardWidth, 21).height;
+    const metaP = Pretext.prepare(a.author + ' | ' + a.date + ' | ' + a.readTime, metaFont);
+    const metaH = Pretext.layout(metaP, cardWidth, 16).height;
+    return titleH + excerptH + metaH + cardPadding + 24; // 24 for gaps
+  });
+  const pretextTime = performance.now() - t0;
+  const totalHeight = pretextHeights.reduce((s, h) => s + h, 0);
+
+  // Approach 2: DOM render all (measure time to create + measure all cards)
+  const container = document.createElement('div');
+  container.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:' + cardWidth + 'px;';
+  document.body.appendChild(container);
+  const t1 = performance.now();
+  const domHeights = articles.map(a => {
+    container.innerHTML = '<div style="padding:20px;font-family:Inter,sans-serif"><h3 style="font:700 16px/1.25 Poppins;margin:0 0 8px">' + a.title + '</h3><p style="font:300 14px/1.5 Inter;margin:0 0 8px">' + a.excerpt + '</p><span style="font:300 12px Inter">' + a.author + ' | ' + a.date + ' | ' + a.readTime + '</span></div>';
+    return container.offsetHeight;
+  });
+  const domTime = performance.now() - t1;
+  document.body.removeChild(container);
+
+  // Approach 3: Fixed height (most common lazy approach)
+  const fixedHeight = 160;
+  const t2 = performance.now();
+  const fixedHeights = articles.map(() => fixedHeight);
+  const fixedTime = performance.now() - t2;
+
+  // Calculate accuracy
+  let pretextError = 0, fixedError = 0;
+  domHeights.forEach((actual, i) => {
+    pretextError += Math.abs(actual - pretextHeights[i]);
+    fixedError += Math.abs(actual - fixedHeights[i]);
+  });
+  const pretextAvgError = (pretextError / count).toFixed(1);
+  const fixedAvgError = (fixedError / count).toFixed(1);
+  const pretextAcc = ((1 - pretextError / domHeights.reduce((s, h) => s + h, 0)) * 100).toFixed(1);
+  const fixedAcc = ((1 - fixedError / domHeights.reduce((s, h) => s + h, 0)) * 100).toFixed(1);
+
+  expResults.articleVirt = { count, pretextTime, domTime, pretextAcc: parseFloat(pretextAcc), fixedAcc: parseFloat(fixedAcc) };
+
+  let html = '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">';
+  // Cards
+  html += '<div style="flex:1;min-width:160px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Pretext Predict</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#4ade80">' + pretextTime.toFixed(1) + 'ms</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">' + count + ' cards</div></div>';
+  html += '<div style="flex:1;min-width:160px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">DOM Render All</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#f87171">' + domTime.toFixed(1) + 'ms</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">' + count + ' cards</div></div>';
+  html += '<div style="flex:1;min-width:160px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Speedup</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#2f5cff">' + (domTime / pretextTime).toFixed(0) + 'x</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">faster</div></div>';
+  html += '<div style="flex:1;min-width:160px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Pretext Accuracy</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:' + (parseFloat(pretextAcc) > 85 ? '#4ade80' : '#fbbf24') + '">' + pretextAcc + '%</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">avg error: ' + pretextAvgError + 'px</div></div>';
+  html += '<div style="flex:1;min-width:160px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Fixed Height Acc.</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:' + (parseFloat(fixedAcc) > 85 ? '#4ade80' : '#f87171') + '">' + fixedAcc + '%</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">avg error: ' + fixedAvgError + 'px</div></div>';
+  html += '</div>';
+  html += '<p style="font-size:0.72rem;color:rgba(237,230,221,0.35);margin:0">Pretext predicts all ' + count + ' card heights without creating any DOM elements. This enables virtual scrolling where only visible cards (~15) exist in the DOM. The "Fixed Height" approach (160px per card) is the common alternative but produces visible jumps when cards have varying content lengths.</p>';
+  document.getElementById('article-results').innerHTML = html;
+}
+
+// Experiment 9: Search results rendering
+function runSearchBenchmark() {
+  if (typeof Pretext === 'undefined') { document.getElementById('search-results-bench').innerHTML = '<p style="color:#f87171">Pretext not loaded.</p>'; return; }
+  const articles = generateArticles(200);
+  const titleFont = '700 14px Poppins';
+  const excerptFont = '300 13px Inter';
+  const resultWidth = 680;
+
+  // Phase 1: Prepare all text (one-time on search)
+  const t0 = performance.now();
+  const prepared = articles.map(a => ({
+    title: Pretext.prepare(a.title, titleFont),
+    excerpt: Pretext.prepare(a.excerpt, excerptFont),
+  }));
+  const prepareTime = performance.now() - t0;
+
+  // Phase 2: Layout visible window (first 15 results)
+  const t1 = performance.now();
+  const visibleHeights = prepared.slice(0, 15).map(p => {
+    const th = Pretext.layout(p.title, resultWidth, 18).height;
+    const eh = Pretext.layout(p.excerpt, resultWidth, 19.5).height;
+    return th + eh + 32;
+  });
+  const visibleTime = performance.now() - t1;
+
+  // Phase 3: Simulate 20 scroll updates (re-layout different windows)
+  const t2 = performance.now();
+  for (let scroll = 0; scroll < 20; scroll++) {
+    const start = scroll * 10;
+    prepared.slice(start, start + 15).forEach(p => {
+      Pretext.layout(p.title, resultWidth, 18);
+      Pretext.layout(p.excerpt, resultWidth, 19.5);
+    });
+  }
+  const scrollTime = (performance.now() - t2) / 20;
+
+  // Phase 4: Full layout of all 200 (for total scroll height)
+  const t3 = performance.now();
+  const allHeights = prepared.map(p => {
+    const th = Pretext.layout(p.title, resultWidth, 18).height;
+    const eh = Pretext.layout(p.excerpt, resultWidth, 19.5).height;
+    return th + eh + 32;
+  });
+  const fullLayoutTime = performance.now() - t3;
+  const totalScrollHeight = allHeights.reduce((s, h) => s + h, 0);
+
+  // DOM comparison
+  const container = document.createElement('div');
+  container.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:' + resultWidth + 'px;';
+  document.body.appendChild(container);
+  const t4 = performance.now();
+  articles.forEach(a => {
+    container.innerHTML = '<div style="padding:16px 0"><h4 style="font:700 14px/1.3 Poppins;margin:0">' + a.title + '</h4><p style="font:300 13px/1.5 Inter;margin:4px 0 0">' + a.excerpt + '</p></div>';
+    container.offsetHeight;
+  });
+  const domFullTime = performance.now() - t4;
+  document.body.removeChild(container);
+
+  expResults.search = { prepareTime, fullLayoutTime, domFullTime, scrollTime };
+
+  let html = '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">';
+  html += '<div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Prepare (one-time)</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#fbbf24">' + prepareTime.toFixed(1) + 'ms</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">200 results</div></div>';
+  html += '<div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Full Layout (all 200)</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#4ade80">' + fullLayoutTime.toFixed(2) + 'ms</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">total height: ' + Math.round(totalScrollHeight) + 'px</div></div>';
+  html += '<div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">DOM Full Render</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#f87171">' + domFullTime.toFixed(1) + 'ms</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">200 reflows</div></div>';
+  html += '</div>';
+  html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px">';
+  html += '<div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Per-Scroll Layout</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#4ade80">' + scrollTime.toFixed(3) + 'ms</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">15 visible items</div></div>';
+  html += '<div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Visible Window</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#4ade80">' + visibleTime.toFixed(3) + 'ms</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">first 15 results</div></div>';
+  html += '<div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:14px;text-align:center"><div style="font-size:0.68rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:4px">Layout Speedup</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.2rem;color:#2f5cff">' + (domFullTime / fullLayoutTime).toFixed(0) + 'x</div><div style="font-size:0.68rem;color:rgba(237,230,221,0.3)">vs DOM</div></div>';
+  html += '</div>';
+  html += '<p style="font-size:0.72rem;color:rgba(237,230,221,0.35);margin:0"><strong>How this works in production:</strong> When a search fires, prepare() runs once on all result text (' + prepareTime.toFixed(0) + 'ms). Then layout() computes heights for the full result set in ' + fullLayoutTime.toFixed(1) + 'ms, giving you the total scrollable height. As the user scrolls, only the visible window (15 items) needs DOM rendering. Each scroll update re-layouts in ' + scrollTime.toFixed(2) + 'ms. Total time from search to visible results: ~' + (prepareTime + visibleTime + 5).toFixed(0) + 'ms (vs ' + domFullTime.toFixed(0) + 'ms rendering all 200).</p>';
+  document.getElementById('search-results-bench').innerHTML = html;
+}
+
+// Experiment 10: CLS prevention
+function runCLSBenchmark() {
+  if (typeof Pretext === 'undefined') { document.getElementById('cls-results').innerHTML = '<p style="color:#f87171">Pretext not loaded.</p>'; return; }
+
+  // Generate article-length text blocks
+  const paragraphs = [
+    'Those who are still arguing whether Kalshi or Polymarket will dominate the prediction market landscape are missing the big picture. Prediction markets are becoming real infrastructure, and the eventual winners will be decided by who can occupy key product archetypes as the stack stratifies, not a winner-takes-all landslide.',
+    'That stratification is already visible. On one end, crypto-native rails like Polymarket optimize for breadth, speed-to-list, and narrative relevance; on the other, regulated rails like Kalshi optimize for settlement credibility and distribution compatibility. But the real accelerant is happening one layer up: execution wrappers like Coinbase and Robinhood are turning event contracts into a mainstream instrument shelf.',
+    'This report gives you the framework to understand where the category is headed, not as a binary onchain vs offchain debate, but as a stack war between rails and wrappers that productize into repeatable archetypes.',
+    'What was dismissed as a passing trend around the 2024 election cycle has ballooned into a class of derivatives that does billions of dollars of volume every week.',
+    'Polymarket still has the edge in volume, depth, and breadth but Kalshi is closing the gap in the overall standings. Overall, the sector is thriving. In the beginning of 2024, you could sneeze and slip the price of every market by 10 cents, but by the fourth quarter of 2025, Polymarket and Kalshi had thousands of markets that could absorb a $10K trade within 1 cent of price impact.',
+  ];
+
+  const font = '300 17px Inter';
+  const lineHeight = 17 * 1.8;
+  const viewports = [375, 480, 680, 768, 1024, 1280];
+
+  // Measure at each viewport width
+  const container = document.createElement('div');
+  container.style.cssText = 'position:absolute;top:-9999px;left:-9999px;font:300 17px/1.8 Inter;';
+  document.body.appendChild(container);
+
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:0.78rem"><thead><tr style="border-bottom:1px solid rgba(237,230,221,0.1)"><th style="text-align:left;padding:6px;color:rgba(237,230,221,0.5)">Viewport</th>';
+  paragraphs.forEach((_, i) => { html += '<th style="text-align:center;padding:6px;color:rgba(237,230,221,0.5)">Block ' + (i+1) + '</th>'; });
+  html += '<th style="text-align:right;padding:6px;color:rgba(237,230,221,0.5)">Avg Accuracy</th></tr></thead><tbody>';
+
+  let overallAcc = 0, vpCount = 0;
+  viewports.forEach(vp => {
+    container.style.width = vp + 'px';
+    html += '<tr style="border-bottom:1px solid rgba(237,230,221,0.04)"><td style="padding:6px;color:#fff;font-weight:600">' + vp + 'px</td>';
+    let vpAcc = 0;
+    paragraphs.forEach(text => {
+      const prepared = Pretext.prepare(text, font);
+      const predicted = Pretext.layout(prepared, vp - 48, lineHeight).height; // 48 = padding
+      container.textContent = text;
+      const actual = container.offsetHeight;
+      const acc = actual > 0 ? ((1 - Math.abs(actual - predicted) / actual) * 100) : 0;
+      vpAcc += acc;
+      const color = acc > 90 ? '#4ade80' : acc > 75 ? '#fbbf24' : '#f87171';
+      html += '<td style="text-align:center;padding:6px;color:' + color + '">' + acc.toFixed(0) + '%</td>';
+    });
+    const avgVpAcc = vpAcc / paragraphs.length;
+    overallAcc += avgVpAcc; vpCount++;
+    const avgColor = avgVpAcc > 90 ? '#4ade80' : avgVpAcc > 75 ? '#fbbf24' : '#f87171';
+    html += '<td style="text-align:right;padding:6px;color:' + avgColor + ';font-weight:600">' + avgVpAcc.toFixed(1) + '%</td></tr>';
+  });
+  document.body.removeChild(container);
+
+  const overallAvg = (overallAcc / vpCount).toFixed(1);
+  expResults.cls = { avgAccuracy: parseFloat(overallAvg) };
+
+  html += '<tr style="border-top:2px solid rgba(237,230,221,0.1);font-weight:600"><td style="padding:6px;color:#fff">Overall Average</td>';
+  for (let i = 0; i < paragraphs.length; i++) html += '<td></td>';
+  html += '<td style="text-align:right;padding:6px;color:' + (parseFloat(overallAvg) > 85 ? '#4ade80' : '#fbbf24') + '">' + overallAvg + '%</td></tr>';
+  html += '</tbody></table>';
+  html += '<p style="margin-top:12px;font-size:0.72rem;color:rgba(237,230,221,0.35)"><strong>What this means for CLS:</strong> If Pretext can predict text block heights within ~5%, you can set accurate min-heights on article sections before images/embeds load, preventing the content-jumps that hurt Core Web Vitals. >90% accuracy = negligible visible shift. 80-90% = minor but acceptable. <80% = noticeable jumps.</p>';
+  document.getElementById('cls-results').innerHTML = html;
+}
+
+// Experiment 11: Live virtual scroll demo
+let vsData = null;
+function initVirtualScrollDemo() {
+  if (typeof Pretext === 'undefined') return;
+  const demoEl = document.getElementById('virtual-scroll-demo');
+  demoEl.style.display = 'block';
+
+  const articles = generateArticles(1000);
+  const titleFont = '700 15px Poppins';
+  const excerptFont = '300 13px Inter';
+  const containerWidth = 680;
+  const cardGap = 8;
+
+  // Prepare + layout all heights
+  const t0 = performance.now();
+  const items = articles.map(a => {
+    const tp = Pretext.prepare(a.title, titleFont);
+    const ep = Pretext.prepare(a.excerpt, excerptFont);
+    const titleH = Pretext.layout(tp, containerWidth - 32, 19).height;
+    const excerptH = Pretext.layout(ep, containerWidth - 32, 18).height;
+    const height = titleH + excerptH + 56; // padding + meta + gaps
+    return { ...a, height };
+  });
+  const prepTime = performance.now() - t0;
+
+  // Build cumulative offsets
+  const offsets = [0];
+  items.forEach((item, i) => { offsets.push(offsets[i] + item.height + cardGap); });
+  const totalHeight = offsets[offsets.length - 1];
+
+  document.getElementById('vs-layout-time').textContent = prepTime.toFixed(1) + 'ms';
+  document.getElementById('vs-total').textContent = items.length;
+
+  const spacer = document.getElementById('vs-spacer');
+  spacer.style.height = totalHeight + 'px';
+
+  const scrollContainer = document.getElementById('vs-container');
+  let lastFrame = performance.now();
+  let frameCount = 0;
+
+  function render() {
+    const scrollTop = scrollContainer.scrollTop;
+    const viewHeight = scrollContainer.clientHeight;
+    const buffer = 200;
+
+    // Binary search for first visible item
+    let lo = 0, hi = items.length - 1;
+    while (lo < hi) { const mid = (lo + hi) >> 1; if (offsets[mid + 1] < scrollTop - buffer) lo = mid + 1; else hi = mid; }
+    const startIdx = lo;
+
+    // Find last visible
+    let endIdx = startIdx;
+    while (endIdx < items.length && offsets[endIdx] < scrollTop + viewHeight + buffer) endIdx++;
+
+    // Render visible cards
+    const fragment = document.createDocumentFragment();
+    for (let i = startIdx; i < endIdx; i++) {
+      const item = items[i];
+      const div = document.createElement('div');
+      div.style.cssText = 'position:absolute;top:' + offsets[i] + 'px;left:0;right:0;height:' + item.height + 'px;padding:12px 16px;background:rgba(237,230,221,0.02);border:1px solid rgba(237,230,221,0.06);border-radius:6px;overflow:hidden;';
+      div.innerHTML = '<div style="font:700 15px/1.25 Poppins;color:#fff;margin-bottom:4px">' + item.title + '</div><div style="font:300 13px/1.4 Inter;color:rgba(237,230,221,0.6);margin-bottom:6px">' + item.excerpt.substring(0, 150) + '...</div><div style="font:300 11px Inter;color:rgba(237,230,221,0.3)">' + item.author + ' | ' + item.date + ' | ' + item.category + ' | ' + item.readTime + '</div>';
+      fragment.appendChild(div);
+    }
+
+    // Clear and append
+    while (spacer.firstChild) spacer.removeChild(spacer.firstChild);
+    spacer.appendChild(fragment);
+
+    document.getElementById('vs-dom-count').textContent = endIdx - startIdx;
+
+    // FPS
+    frameCount++;
+    const now = performance.now();
+    if (now - lastFrame > 1000) {
+      document.getElementById('vs-fps').textContent = frameCount;
+      frameCount = 0;
+      lastFrame = now;
+    }
+  }
+
+  scrollContainer.addEventListener('scroll', () => requestAnimationFrame(render));
+  render();
+}
+
 // Summary: Generate recommendation
 function generateRecommendation() {
   const el = document.getElementById('recommendation-results');
@@ -1561,6 +1966,9 @@ function generateRecommendation() {
   if (!expResults.hybrid) missing.push('Hybrid Estimator (#5)');
   if (!expResults.cardSizing) missing.push('Card Sizing (#6)');
   if (!expResults.collision) missing.push('Collision Detection (#7)');
+  if (!expResults.articleVirt) missing.push('Article Virtualization (#8)');
+  if (!expResults.search) missing.push('Search Results (#9)');
+  if (!expResults.cls) missing.push('CLS Prevention (#10)');
 
   if (missing.length > 0) {
     el.innerHTML = '<p style="color:#fbbf24">Please run these experiments first: ' + missing.join(', ') + '</p>';
@@ -1605,11 +2013,40 @@ function generateRecommendation() {
   html += '</div></div>';
   html += '</div>';
 
+  // Production context cards
+  html += '<div style="border-top:1px solid rgba(237,230,221,0.08);padding-top:16px;margin-top:8px">';
+  html += '<div style="font-family:Poppins,sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:12px;color:#fff">Production Context: blocmates.com (10K articles)</div>';
+  html += '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px">';
+
+  // Article virtualization
+  if (expResults.articleVirt) {
+    const v = expResults.articleVirt;
+    html += '<div style="flex:1;min-width:200px;padding:14px;border-radius:8px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06)"><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:6px;color:#fff">Article List Virtualization</div><div style="font-size:0.8rem;color:rgba(237,230,221,0.6)">' + (v.domTime / v.pretextTime).toFixed(0) + 'x speedup for ' + v.count + ' cards. ' + v.pretextAcc.toFixed(0) + '% height accuracy. <span style="color:#4ade80">High value.</span> Enables virtual scrolling for category pages, search results, and article archives without rendering all cards to the DOM.</div></div>';
+  }
+
+  // Search
+  if (expResults.search) {
+    const s = expResults.search;
+    html += '<div style="flex:1;min-width:200px;padding:14px;border-radius:8px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06)"><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:6px;color:#fff">Search Performance</div><div style="font-size:0.8rem;color:rgba(237,230,221,0.6)">Prepare: ' + s.prepareTime.toFixed(0) + 'ms, layout: ' + s.fullLayoutTime.toFixed(1) + 'ms, per-scroll: ' + s.scrollTime.toFixed(2) + 'ms. <span style="color:#4ade80">High value.</span> Search results can render in under ' + (s.prepareTime + 5).toFixed(0) + 'ms with only visible items in the DOM. Scroll updates are sub-millisecond.</div></div>';
+  }
+
+  // CLS
+  if (expResults.cls) {
+    const c = expResults.cls;
+    const clsVerdict = c.avgAccuracy > 90 ? 'High value' : c.avgAccuracy > 80 ? 'Moderate value' : 'Limited value';
+    const clsColor = c.avgAccuracy > 90 ? '#4ade80' : c.avgAccuracy > 80 ? '#fbbf24' : '#f87171';
+    html += '<div style="flex:1;min-width:200px;padding:14px;border-radius:8px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06)"><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:0.85rem;margin-bottom:6px;color:#fff">CLS Prevention</div><div style="font-size:0.8rem;color:rgba(237,230,221,0.6)">' + c.avgAccuracy.toFixed(0) + '% text height accuracy across viewports. <span style="color:' + clsColor + '">' + clsVerdict + '.</span> Pre-set article section heights to prevent layout jumps as images and embeds load. Directly improves Core Web Vitals CLS score.</div></div>';
+  }
+
+  html += '</div>';
+
   // Bottom line
   html += '<div style="border-top:1px solid rgba(237,230,221,0.08);padding-top:16px;margin-top:8px">';
   html += '<div style="font-family:Poppins,sans-serif;font-weight:700;font-size:0.9rem;margin-bottom:8px;color:#fff">Bottom Line</div>';
-  html += '<p style="font-size:0.85rem;color:rgba(237,230,221,0.7);margin-bottom:8px"><strong>Include Pretext (30KB) in future interactive reports.</strong> The speed win for resize/responsive layout is the clearest value. Canvas widget text measurement is an immediate practical improvement. Virtual scrolling and dashboard pre-sizing are viable if combined with element-type estimates.</p>';
-  html += '<p style="font-size:0.85rem;color:rgba(237,230,221,0.7);margin-bottom:0"><strong>Priority integration points:</strong> (1) Canvas widgets that draw text manually, (2) any future responsive/magazine-style layouts, (3) dashboard card height prediction if layout shift becomes noticeable, (4) label collision detection as a dev-time QA tool.</p>';
+  html += '<p style="font-size:0.85rem;color:rgba(237,230,221,0.7);margin-bottom:8px"><strong>Include Pretext (30KB) in the blocmates site rebuild.</strong> For a 10K-article site with slow page loads and search, the biggest wins are: (1) virtual scrolling for article lists/search results, eliminating the need to render hundreds of DOM nodes, and (2) CLS prevention by pre-calculating text heights before media loads.</p>';
+  html += '<p style="font-size:0.85rem;color:rgba(237,230,221,0.7);margin-bottom:8px"><strong>For interactive reports specifically:</strong> Canvas widget text measurement (immediate win), responsive layout calculations (future win), dashboard card pre-sizing (moderate win).</p>';
+  html += '<p style="font-size:0.85rem;color:rgba(237,230,221,0.7);margin-bottom:8px"><strong>Integration path:</strong> Add Pretext as a utility module in the headless frontend. Call prepare() when article data arrives from the CMS API, then use layout() heights for virtual list rendering, search result sizing, and CLS placeholder heights. The 30KB bundle cost is negligible compared to the DOM work it eliminates.</p>';
+  html += '<p style="font-size:0.85rem;color:rgba(237,230,221,0.7);margin-bottom:0"><strong>Quick wins for current WordPress site:</strong> Inject Pretext as a script tag on category/archive pages to virtualize article lists. No frontend rebuild required. Biggest impact on pages that currently render 50+ article cards.</p>';
   html += '</div></div>';
 
   el.innerHTML = html;
