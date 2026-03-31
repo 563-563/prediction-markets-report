@@ -1161,6 +1161,10 @@
 // Experiment 1: Section height prediction
 function runPretextBenchmark() {
   if (typeof Pretext === 'undefined') { document.getElementById('pretext-results').innerHTML = '<p style="color:#fe4a49">Pretext library not loaded.</p>'; return; }
+  // Temporarily show reportView to get actual heights (hidden elements return 0)
+  const rv = document.getElementById('reportView');
+  const wasHidden = rv.classList.contains('hidden');
+  if (wasHidden) { rv.style.position = 'absolute'; rv.style.left = '-9999px'; rv.classList.remove('hidden'); }
   const sections = document.querySelectorAll('#reportView section');
   const font = '300 17px Inter';
   const lineHeight = 17 * 1.8;
@@ -1185,6 +1189,8 @@ function runPretextBenchmark() {
   });
   const elapsed = (performance.now() - t0).toFixed(2);
   html += '</tbody></table>';
+  // Restore hidden state
+  if (wasHidden) { rv.classList.add('hidden'); rv.style.position = ''; rv.style.left = ''; }
   html += '<p style="margin-top:12px;font-size:0.72rem;color:rgba(237,230,221,0.35)">Measured ' + sections.length + ' sections in ' + elapsed + 'ms. Note: "Predicted" only counts paragraph text. Charts, tables, widgets, and margins are not included, which explains the gap.</p>';
   document.getElementById('pretext-results').innerHTML = html;
 }
