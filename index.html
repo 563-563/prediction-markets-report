@@ -28,6 +28,7 @@
     <div class="view-tabs nav-view-tabs">
       <button class="view-tab active" data-view="report">Report</button>
       <button class="view-tab" data-view="dashboard">Dashboard</button>
+      <button class="view-tab" data-view="experiments">Experiments</button>
       
     </div>
   </div>
@@ -1066,7 +1067,82 @@
 </div><!-- /dashboard -->
 </div><!-- /dashboardView -->
 
-<!-- ==================== TINKERING VIEW ==================== -->
+<!-- ==================== EXPERIMENTS VIEW ==================== -->
+<div id="experimentsView" class="hidden">
+<div class="dashboard">
+
+  <div class="dash-section">
+    <h2 class="dash-section-title">Pretext Integration Experiment</h2>
+    <p class="dash-section-desc">Testing @chenglou/pretext for DOM-free text measurement. This library pre-measures text via canvas measureText, caches results, then computes layout with pure arithmetic. No reflows, no getBoundingClientRect.</p>
+
+    <div class="dash-explainer">
+      <h3 style="margin-top:0;margin-bottom:12px;font-size:1rem">What is Pretext?</h3>
+      <p>A pure JS library (~30KB, zero dependencies) that eliminates DOM layout reflows for text measurement. Two phases: <strong>prepare()</strong> measures text once via canvas, then <strong>layout()</strong> computes height/line count with pure arithmetic in sub-millisecond time.</p>
+      <p style="margin-bottom:0"><a href="https://github.com/chenglou/pretext" target="_blank">View on GitHub</a></p>
+    </div>
+
+    <!-- Experiment 1: Section Height Prediction -->
+    <div class="dash-card full-width" style="margin-top:20px">
+      <div class="chart-title">Experiment 1: Section Height Prediction</div>
+      <p class="chart-desc">Pretext predicts paragraph heights without rendering. Compare predicted vs actual section heights. Low accuracy expected because sections contain charts/widgets/tables, not just text. Click "Run Benchmark" to measure.</p>
+      <div style="margin:16px 0">
+        <button class="chart-btn active" onclick="runPretextBenchmark()" id="pretext-run-btn">Run Benchmark</button>
+      </div>
+      <div id="pretext-results" style="font-family:'Inter',sans-serif;font-size:0.82rem;color:rgba(237,230,221,0.7)">
+        <p style="color:rgba(237,230,221,0.35)">Click "Run Benchmark" to measure section heights...</p>
+      </div>
+    </div>
+
+    <!-- Experiment 2: Text Measurement Speed -->
+    <div class="dash-card full-width" style="margin-top:20px">
+      <div class="chart-title">Experiment 2: Measurement Speed Comparison</div>
+      <p class="chart-desc">Compare Pretext's prepare+layout speed vs DOM-based offsetHeight for the same text blocks. Pretext should be dramatically faster for the layout phase after initial preparation.</p>
+      <div style="margin:16px 0">
+        <button class="chart-btn active" onclick="runSpeedBenchmark()" id="speed-run-btn">Run Speed Test</button>
+      </div>
+      <div id="speed-results" style="font-family:'Inter',sans-serif;font-size:0.82rem;color:rgba(237,230,221,0.7)">
+        <p style="color:rgba(237,230,221,0.35)">Click "Run Speed Test" to compare measurement approaches...</p>
+      </div>
+    </div>
+
+    <!-- Experiment 3: Live Text Measurement Demo -->
+    <div class="dash-card full-width" style="margin-top:20px">
+      <div class="chart-title">Experiment 3: Live Text Measurement</div>
+      <p class="chart-desc">Type text below and watch Pretext predict height and line count in real-time as width changes. Drag the width slider to see how layout reflows without touching the DOM.</p>
+      <div style="margin:16px 0;display:flex;gap:20px;flex-wrap:wrap">
+        <div style="flex:1;min-width:300px">
+          <textarea id="pretext-input" rows="4" style="width:100%;background:rgba(237,230,221,0.04);border:1px solid rgba(237,230,221,0.1);border-radius:6px;padding:12px;color:#fff;font-family:Inter,sans-serif;font-size:14px;resize:vertical" placeholder="Type some text here to see live measurement...">Prediction markets are becoming real infrastructure, and the eventual winners will be decided by who can occupy key product archetypes as the stack stratifies, not a winner-takes-all landslide.</textarea>
+          <div style="margin-top:12px">
+            <label style="font-size:0.72rem;color:rgba(237,230,221,0.4)">Container Width: <span id="pretext-width-label">400px</span></label>
+            <input type="range" id="pretext-width-slider" min="100" max="800" value="400" style="width:100%;accent-color:#2f5cff;margin-top:4px">
+          </div>
+        </div>
+        <div style="flex:0 0 200px">
+          <div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:16px;text-align:center">
+            <div style="font-size:0.72rem;color:rgba(237,230,221,0.4);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Predicted Height</div>
+            <div id="pretext-live-height" style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.8rem;color:#fff">--</div>
+          </div>
+          <div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:16px;text-align:center;margin-top:8px">
+            <div style="font-size:0.72rem;color:rgba(237,230,221,0.4);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Line Count</div>
+            <div id="pretext-live-lines" style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.8rem;color:#fff">--</div>
+          </div>
+          <div style="background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:16px;text-align:center;margin-top:8px">
+            <div style="font-size:0.72rem;color:rgba(237,230,221,0.4);text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px">Layout Time</div>
+            <div id="pretext-live-time" style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.8rem;color:#fff">--</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="report-footer">
+    <div class="footer-brand"><img src="assets/logo.png" alt="blocmates." style="height:24px;width:auto"></div>
+    <div class="footer-sub">Experiments Lab - The State of Prediction Markets - April 2026</div>
+  </footer>
+
+</div>
+</div><!-- /experimentsView -->
 
 
 <!-- Libraries -->
@@ -1074,7 +1150,113 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.1.0/dist/chartjs-plugin-annotation.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
+<!-- Pretext: DOM-free text measurement -->
+<script src="js/pretext.min.js"></script>
+
 <!-- App -->
-<script src="js/app.js?v=76"></script>
+<script src="js/app.js?v=77"></script>
+
+<!-- Experiments -->
+<script>
+// Experiment 1: Section height prediction
+function runPretextBenchmark() {
+  if (typeof Pretext === 'undefined') { document.getElementById('pretext-results').innerHTML = '<p style="color:#fe4a49">Pretext library not loaded.</p>'; return; }
+  const sections = document.querySelectorAll('#reportView section');
+  const font = '300 17px Inter';
+  const lineHeight = 17 * 1.8;
+  const textWidth = 680;
+  let html = '<table style="width:100%;border-collapse:collapse;font-size:0.82rem"><thead><tr style="border-bottom:1px solid rgba(237,230,221,0.1)"><th style="text-align:left;padding:8px;color:rgba(237,230,221,0.5)">Section</th><th style="text-align:right;padding:8px;color:rgba(237,230,221,0.5)">Predicted (text only)</th><th style="text-align:right;padding:8px;color:rgba(237,230,221,0.5)">Actual</th><th style="text-align:right;padding:8px;color:rgba(237,230,221,0.5)">Text Accuracy</th><th style="text-align:right;padding:8px;color:rgba(237,230,221,0.5)">Paragraphs</th></tr></thead><tbody>';
+  const t0 = performance.now();
+  sections.forEach(section => {
+    const paragraphs = section.querySelectorAll('p');
+    let predicted = 0;
+    paragraphs.forEach(p => {
+      const text = p.textContent || '';
+      if (text.trim()) {
+        const prepared = Pretext.prepare(text, font);
+        const result = Pretext.layout(prepared, textWidth, lineHeight);
+        predicted += result.height + 24;
+      }
+    });
+    const actual = section.offsetHeight;
+    const accuracy = actual > 0 ? ((1 - Math.abs(actual - predicted) / actual) * 100).toFixed(1) : 'N/A';
+    const color = parseFloat(accuracy) > 70 ? '#4ade80' : parseFloat(accuracy) > 40 ? '#fbbf24' : '#f87171';
+    html += '<tr style="border-bottom:1px solid rgba(237,230,221,0.04)"><td style="padding:8px;color:#fff">' + section.id + '</td><td style="text-align:right;padding:8px">' + Math.round(predicted) + 'px</td><td style="text-align:right;padding:8px">' + actual + 'px</td><td style="text-align:right;padding:8px;color:' + color + '">' + accuracy + '%</td><td style="text-align:right;padding:8px">' + paragraphs.length + '</td></tr>';
+  });
+  const elapsed = (performance.now() - t0).toFixed(2);
+  html += '</tbody></table>';
+  html += '<p style="margin-top:12px;font-size:0.72rem;color:rgba(237,230,221,0.35)">Measured ' + sections.length + ' sections in ' + elapsed + 'ms. Note: "Predicted" only counts paragraph text. Charts, tables, widgets, and margins are not included, which explains the gap.</p>';
+  document.getElementById('pretext-results').innerHTML = html;
+}
+
+// Experiment 2: Speed comparison
+function runSpeedBenchmark() {
+  if (typeof Pretext === 'undefined') { document.getElementById('speed-results').innerHTML = '<p style="color:#fe4a49">Pretext library not loaded.</p>'; return; }
+  const paragraphs = Array.from(document.querySelectorAll('#reportView p')).filter(p => p.textContent.trim().length > 20);
+  const texts = paragraphs.slice(0, 100).map(p => p.textContent);
+  const font = '300 17px Inter';
+  const lineHeight = 17 * 1.8;
+  const maxWidth = 680;
+
+  // Pretext: prepare phase
+  const t0 = performance.now();
+  const prepared = texts.map(t => Pretext.prepare(t, font));
+  const prepareTime = performance.now() - t0;
+
+  // Pretext: layout phase (the fast part)
+  const t1 = performance.now();
+  for (let i = 0; i < 10; i++) { prepared.forEach(p => Pretext.layout(p, maxWidth, lineHeight)); }
+  const layoutTime = (performance.now() - t1) / 10;
+
+  // DOM: offsetHeight measurement
+  const container = document.createElement('div');
+  container.style.cssText = 'position:absolute;top:-9999px;left:-9999px;width:680px;font:300 17px/1.8 Inter;';
+  document.body.appendChild(container);
+  const t2 = performance.now();
+  texts.forEach(t => { container.textContent = t; container.offsetHeight; });
+  const domTime = performance.now() - t2;
+  document.body.removeChild(container);
+
+  const speedup = (domTime / layoutTime).toFixed(0);
+
+  let html = '<div style="display:flex;gap:16px;flex-wrap:wrap">';
+  html += '<div style="flex:1;min-width:200px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:16px;text-align:center"><div style="font-size:0.72rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:6px">Pretext prepare()</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.4rem;color:#fbbf24">' + prepareTime.toFixed(1) + 'ms</div><div style="font-size:0.7rem;color:rgba(237,230,221,0.35)">One-time cost for ' + texts.length + ' texts</div></div>';
+  html += '<div style="flex:1;min-width:200px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:16px;text-align:center"><div style="font-size:0.72rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:6px">Pretext layout()</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.4rem;color:#4ade80">' + layoutTime.toFixed(2) + 'ms</div><div style="font-size:0.7rem;color:rgba(237,230,221,0.35)">Per-resize cost (avg of 10 runs)</div></div>';
+  html += '<div style="flex:1;min-width:200px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:16px;text-align:center"><div style="font-size:0.72rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:6px">DOM offsetHeight</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.4rem;color:#f87171">' + domTime.toFixed(1) + 'ms</div><div style="font-size:0.7rem;color:rgba(237,230,221,0.35)">' + texts.length + ' texts, forced reflow each</div></div>';
+  html += '<div style="flex:1;min-width:200px;background:rgba(237,230,221,0.03);border:1px solid rgba(237,230,221,0.06);border-radius:8px;padding:16px;text-align:center"><div style="font-size:0.72rem;color:rgba(237,230,221,0.4);text-transform:uppercase;margin-bottom:6px">Layout Speedup</div><div style="font-family:Poppins,sans-serif;font-weight:700;font-size:1.4rem;color:#2f5cff">' + speedup + 'x faster</div><div style="font-size:0.7rem;color:rgba(237,230,221,0.35)">vs DOM after initial prepare</div></div>';
+  html += '</div>';
+  html += '<p style="margin-top:12px;font-size:0.72rem;color:rgba(237,230,221,0.35)">prepare() runs once when text loads. layout() runs on every resize/reflow. The speedup matters most for interactive resize, virtual scrolling, and responsive layout calculations.</p>';
+  document.getElementById('speed-results').innerHTML = html;
+}
+
+// Experiment 3: Live text measurement
+(function() {
+  const input = document.getElementById('pretext-input');
+  const slider = document.getElementById('pretext-width-slider');
+  if (!input || !slider) return;
+
+  function updateLive() {
+    if (typeof Pretext === 'undefined') return;
+    const text = input.value;
+    const width = parseInt(slider.value);
+    document.getElementById('pretext-width-label').textContent = width + 'px';
+
+    const font = '300 14px Inter';
+    const lineHeight = 14 * 1.8;
+    const t0 = performance.now();
+    const prepared = Pretext.prepare(text, font);
+    const result = Pretext.layout(prepared, width, lineHeight);
+    const elapsed = performance.now() - t0;
+
+    document.getElementById('pretext-live-height').textContent = Math.round(result.height) + 'px';
+    document.getElementById('pretext-live-lines').textContent = result.lineCount;
+    document.getElementById('pretext-live-time').textContent = elapsed.toFixed(2) + 'ms';
+  }
+
+  input.addEventListener('input', updateLive);
+  slider.addEventListener('input', updateLive);
+  setTimeout(updateLive, 500);
+})();
+</script>
 </body>
 </html>

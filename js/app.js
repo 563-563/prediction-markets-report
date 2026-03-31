@@ -1230,6 +1230,7 @@ document.addEventListener('click', (e) => {
   const reportView = document.getElementById('reportView');
   const dashboardView = document.getElementById('dashboardView');
   const tinkeringView = document.getElementById('tinkeringView');
+  const experimentsView = document.getElementById('experimentsView');
   const reportNav = document.getElementById('reportNav');
   const readingProgress = document.getElementById('readingProgress');
   const viewBar = document.getElementById('viewBar');
@@ -1238,6 +1239,7 @@ document.addEventListener('click', (e) => {
   reportView.classList.add('hidden');
   dashboardView.classList.add('hidden');
   if (tinkeringView) tinkeringView.classList.add('hidden');
+  if (experimentsView) experimentsView.classList.add('hidden');
 
   if (view === 'dashboard') {
     dashboardView.classList.remove('hidden');
@@ -1259,6 +1261,12 @@ document.addEventListener('click', (e) => {
       window.tinkeringInitialized = true;
       setTimeout(() => initTinkering(), 50);
     }
+  } else if (view === 'experiments') {
+    experimentsView.classList.remove('hidden');
+    if (reportNav) reportNav.style.display = 'none';
+    if (readingProgress) readingProgress.style.display = 'none';
+    if (viewBar) { viewBar.style.opacity = '1'; viewBar.style.pointerEvents = ''; }
+    window.scrollTo(0, 0);
   } else {
     reportView.classList.remove('hidden');
     if (reportNav) reportNav.style.display = '';
