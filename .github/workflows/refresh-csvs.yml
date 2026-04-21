@@ -1,0 +1,38 @@
+name: Prediction Markets Daily Refresh
+
+on:
+  schedule:
+    - cron: '0 7 * * *'  # Every day at 07:00 UTC
+  workflow_dispatch:       # Manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-csvs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Re-execute on-chain queries and export CSVs
+        env:
+          DUNE_API_KEY: ${{ secrets.DUNE_API_KEY }}
+        run: python scripts/export_csvs.py --refresh --skip-static
+
+      - name: Commit and push CSVs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add prediction-markets/
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "[SYNC] Update prediction markets CSVs"
+          git pull --rebase origin main
+          git push
