@@ -173,18 +173,14 @@ em, i {
   padding: 0 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 16px;
   height: 48px;
 }
 
 .report-nav-inner .nav-links {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.report-nav-inner {
-  position: relative;
+  flex: 1;
+  justify-content: center;
+  min-width: 0;
 }
 
 .nav-brand {

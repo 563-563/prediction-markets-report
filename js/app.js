@@ -109,7 +109,9 @@ function fmtK(n) {
 function fmtDate(dateStr) {
   if (!dateStr) return '';
   const d = new Date(dateStr);
-  return d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+  const month = d.toLocaleDateString('en-US', { month: 'short' });
+  const year = String(d.getFullYear()).slice(-2);
+  return `${month} '${year}`;
 }
 
 function fmtDateShort(dateStr) {
